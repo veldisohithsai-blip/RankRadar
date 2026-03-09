@@ -1,0 +1,1974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RankRadar — India College Finder Agent</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --saffron: #7C6FCD;
+  --saffron-light: #9B90D9;
+  --green: #4A9B7F;
+  --green-light: #5BB896;
+  --navy: #F2F1FA;
+  --navy-mid: #E8E6F5;
+  --navy-light: #DDDAF2;
+  --cream: #2D2B45;
+  --gold: #C4875E;
+  --muted: #7A7898;
+  --card-bg: #FFFFFF;
+  --border: rgba(90,80,160,0.1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--navy);
+  color: var(--cream);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Background decoration */
+body::before {
+  content: '';
+  position: fixed; top: 0; left: 0; right: 0; height: 100vh;
+  background: 
+    radial-gradient(ellipse 60% 50% at 80% 10%, rgba(124,111,205,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 10% 80%, rgba(74,155,127,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(242,241,250,0) 0%, #F2F1FA 100%);
+  pointer-events: none; z-index: 0;
+}
+
+/* Ashoka Chakra watermark */
+body::after {
+  content: '☸';
+  position: fixed;
+  right: -60px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 400px;
+  color: rgba(90,80,160,0.04);
+  pointer-events: none; z-index: 0;
+  line-height: 1;
+}
+
+.wrapper { position: relative; z-index: 1; }
+
+/* Header */
+header {
+  padding: 1.8rem 3rem;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  background: rgba(242,241,250,0.85);
+  position: sticky; top: 0; z-index: 100;
+}
+
+.logo {
+  display: flex; align-items: center; gap: 0.75rem;
+}
+
+.logo-icon {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, #7C6FCD, #9B90D9);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+}
+
+.logo-text {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.4rem;
+  letter-spacing: -0.02em;
+}
+
+.logo-text span { color: var(--saffron); }
+
+.header-badge {
+  font-size: 0.7rem;
+  background: rgba(124,111,205,0.1);
+  border: 1px solid rgba(124,111,205,0.25);
+  color: var(--saffron-light);
+  padding: 0.3rem 0.8rem;
+  border-radius: 100px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 4rem 2rem 2.5rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.hero-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  font-family: 'Syne', sans-serif;
+}
+
+.hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  font-weight: 400;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--saffron);
+}
+
+.hero p {
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* Form Card */
+.form-card {
+  max-width: 860px;
+  margin: 2rem auto;
+  padding: 2.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+}
+
+.form-section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--saffron);
+  margin-bottom: 1.2rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+
+.form-section-title::after {
+  content: ''; flex: 1;
+  height: 1px; background: var(--border);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  display: flex; flex-direction: column; gap: 0.5rem;
+}
+
+.form-group.full { grid-column: 1 / -1; }
+
+label {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+input, select, textarea {
+  background: rgba(90,80,160,0.05);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: var(--cream);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: rgba(124,111,205,0.5);
+  box-shadow: 0 0 0 3px rgba(124,111,205,0.07);
+}
+
+select option { background: var(--navy-mid); color: var(--cream); }
+
+.checkbox-group {
+  display: flex; flex-wrap: wrap; gap: 0.6rem;
+}
+
+.chip {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: transparent;
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.chip:hover { border-color: var(--saffron); color: var(--cream); }
+.chip.selected {
+  background: rgba(124,111,205,0.1);
+  border-color: var(--saffron);
+  color: var(--saffron-light);
+}
+
+/* Budget slider */
+.slider-container { position: relative; }
+.budget-display {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  height: 4px;
+  background: linear-gradient(to right, var(--saffron) 0%, var(--saffron) var(--val, 50%), rgba(90,80,160,0.1) var(--val, 50%));
+  border-radius: 2px;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px; height: 18px;
+  background: var(--saffron);
+  border-radius: 50%;
+  border: 3px solid var(--cream);
+  box-shadow: 0 2px 8px rgba(124,111,205,0.35);
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, var(--saffron), #5a4fb5);
+  color: white;
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  margin-top: 0.5rem;
+  box-shadow: 0 8px 24px rgba(124,111,205,0.25);
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(124,111,205,0.35);
+}
+
+.submit-btn:active { transform: translateY(0); }
+.submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* Agent output */
+.agent-section {
+  max-width: 860px;
+  margin: 0 auto 3rem;
+  display: none;
+}
+
+.agent-header {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.agent-avatar {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--green), #3a8a70);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.agent-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.agent-label strong { color: var(--green-light); display: block; font-size: 1rem; }
+
+/* Thinking animation */
+.thinking {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 1.5rem 2rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.dots span {
+  display: inline-block;
+  width: 6px; height: 6px;
+  background: var(--saffron);
+  border-radius: 50%;
+  animation: pulse 1.2s ease-in-out infinite;
+  margin: 0 2px;
+}
+.dots span:nth-child(2) { animation-delay: 0.2s; }
+.dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes pulse {
+  0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* Chat stream */
+.chat-bubble {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.75;
+  font-size: 0.92rem;
+  animation: fadeUp 0.4s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* College cards */
+.colleges-grid {
+  display: flex; flex-direction: column; gap: 1rem;
+  margin-top: 1rem;
+}
+
+.college-card {
+  background: var(--navy-light);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1rem;
+  align-items: start;
+  animation: fadeUp 0.4s ease both;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  cursor: default;
+}
+
+.college-card:hover {
+  border-color: rgba(124,111,205,0.2);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.college-rank {
+  font-family: 'Syne', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--border);
+  line-height: 1;
+  min-width: 48px;
+  text-align: center;
+}
+
+.college-rank.top { color: var(--gold); }
+.college-rank.second { color: var(--muted); }
+.college-rank.third { color: #b87333; }
+
+.college-info h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.college-meta {
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.tag {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 100px;
+  font-weight: 500;
+}
+
+.tag-location { background: rgba(74,155,127,0.15); color: #3da882; border: 1px solid rgba(74,155,127,0.2); }
+.tag-type { background: rgba(196,135,94,0.1); color: var(--gold); border: 1px solid rgba(196,135,94,0.2); }
+.tag-exam { background: rgba(124,111,205,0.1); color: var(--saffron-light); border: 1px solid rgba(124,111,205,0.15); }
+.tag-fee { background: rgba(100,160,220,0.12); color: #5a9fd4; border: 1px solid rgba(100,160,220,0.2); }
+
+.college-score {
+  text-align: right;
+}
+
+.match-score {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--green-light);
+  line-height: 1;
+}
+
+.match-label {
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.match-bar {
+  width: 80px;
+  height: 3px;
+  background: rgba(90,80,160,0.1);
+  border-radius: 2px;
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+.match-bar-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--green), var(--green-light));
+  border-radius: 2px;
+  transition: width 1s ease;
+}
+
+.college-why {
+  grid-column: 2 / 4;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.6;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+  margin-top: 0.5rem;
+}
+
+/* Stats bar */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-box {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  text-align: center;
+  animation: fadeUp 0.3s ease both;
+}
+
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--saffron);
+}
+
+.stat-lbl {
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 0.2rem;
+}
+
+/* ── Login / Signup Page ────────────────────────────────────── */
+#login-page {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--navy);
+  overflow: hidden;
+}
+
+#login-page::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 10%, rgba(124,111,205,0.1) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 10% 80%, rgba(74,155,127,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+#login-page::after {
+  content: '☸';
+  position: absolute;
+  right: -80px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 500px;
+  color: rgba(90,80,160,0.035);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.login-box {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 440px;
+  margin: 1.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2.8rem 2.5rem;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+  animation: fadeUp 0.5s ease;
+}
+
+.login-logo {
+  display: flex; align-items: center; gap: 0.75rem;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.login-subtitle {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.88rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.auth-tabs {
+  display: grid; grid-template-columns: 1fr 1fr;
+  background: rgba(90,80,160,0.04);
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border);
+}
+
+.auth-tab {
+  padding: 0.55rem;
+  text-align: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 7px;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.auth-tab.active {
+  background: var(--saffron);
+  color: white;
+  box-shadow: 0 4px 12px rgba(124,111,205,0.3);
+}
+
+.auth-form { display: none; }
+.auth-form.active { display: block; }
+
+.auth-form .form-group { margin-bottom: 1.1rem; }
+
+.auth-form label {
+  font-size: 0.76rem;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+  display: block;
+  letter-spacing: 0.04em;
+}
+
+.auth-form input {
+  padding: 0.75rem 1rem;
+}
+
+.auth-form input:focus {
+  border-color: rgba(124,111,205,0.5);
+  box-shadow: 0 0 0 3px rgba(124,111,205,0.07);
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon input { padding-left: 2.6rem; }
+
+.input-icon {
+  position: absolute; left: 0.9rem; top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.95rem;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.password-toggle {
+  position: absolute; right: 0.9rem; top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer; opacity: 0.5;
+  font-size: 0.9rem;
+  transition: opacity 0.2s;
+}
+.password-toggle:hover { opacity: 1; }
+
+.forgot-link {
+  display: block; text-align: right;
+  font-size: 0.75rem;
+  color: var(--saffron-light);
+  text-decoration: none;
+  margin-top: -0.6rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.forgot-link:hover { color: var(--gold); }
+
+.auth-btn {
+  width: 100%;
+  padding: 0.9rem;
+  background: linear-gradient(135deg, var(--saffron), #5a4fb5);
+  color: white;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 8px 24px rgba(124,111,205,0.25);
+  margin-top: 0.5rem;
+}
+
+.auth-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(124,111,205,0.35);
+}
+
+.auth-btn:active { transform: none; }
+
+.divider-or {
+  display: flex; align-items: center; gap: 0.8rem;
+  margin: 1.4rem 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.divider-or::before, .divider-or::after {
+  content: ''; flex: 1;
+  height: 1px; background: var(--border);
+}
+
+.social-btns {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem;
+}
+
+.social-btn {
+  padding: 0.65rem 0.8rem;
+  background: rgba(90,80,160,0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--cream);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.social-btn:hover {
+  background: rgba(90,80,160,0.08);
+  border-color: rgba(255,255,255,0.15);
+}
+
+.terms-note {
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 1.4rem;
+  line-height: 1.6;
+}
+
+.terms-note a {
+  color: var(--saffron-light);
+  text-decoration: none;
+}
+.terms-note a:hover { text-decoration: underline; }
+
+.login-error {
+  background: rgba(200,70,70,0.08);
+  border: 1px solid rgba(200,70,70,0.2);
+  color: #d46868;
+  border-radius: 8px;
+  padding: 0.65rem 1rem;
+  font-size: 0.82rem;
+  margin-bottom: 1rem;
+  display: none;
+  animation: fadeUp 0.3s ease;
+}
+
+.login-success {
+  background: rgba(74,155,127,0.08);
+  border: 1px solid rgba(74,155,127,0.2);
+  color: #3da882;
+  border-radius: 8px;
+  padding: 0.65rem 1rem;
+  font-size: 0.82rem;
+  margin-bottom: 1rem;
+  display: none;
+  animation: fadeUp 0.3s ease;
+}
+
+/* Password strength */
+.strength-bar {
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(90,80,160,0.08);
+  margin-top: 0.4rem;
+  overflow: hidden;
+}
+.strength-fill {
+  height: 100%;
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.3s, background 0.3s;
+}
+
+/* Header user avatar */
+.header-user {
+  display: flex; align-items: center; gap: 0.6rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.user-avatar {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, #7C6FCD, #9B90D9);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: white;
+  font-family: 'Syne', sans-serif;
+}
+
+.logout-btn {
+  font-size: 0.72rem;
+  padding: 0.3rem 0.7rem;
+  background: rgba(90,80,160,0.05);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.logout-btn:hover { border-color: rgba(124,111,205,0.35); color: var(--saffron-light); }
+
+/* ── Abstract / About Modal ──────────────────────────────────── */
+#abstract-modal {
+  position: fixed; inset: 0; z-index: 8888;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+}
+#abstract-modal.open { opacity: 1; pointer-events: all; }
+
+.abstract-box {
+  position: relative;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2.5rem;
+  max-width: 620px;
+  width: calc(100% - 2rem);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: fadeUp 0.4s ease;
+}
+
+.abstract-close {
+  position: absolute; top: 1.2rem; right: 1.4rem;
+  background: none; border: none;
+  color: var(--muted); font-size: 1.3rem;
+  cursor: pointer; transition: color 0.2s;
+}
+.abstract-close:hover { color: var(--cream); }
+
+.abstract-tag {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--saffron);
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+
+.abstract-box h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  margin-bottom: 1.2rem;
+  line-height: 1.3;
+}
+
+.abstract-box h2 em { color: var(--saffron); font-style: italic; }
+
+.abstract-body {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.85;
+}
+
+.abstract-body p { margin-bottom: 1rem; }
+
+.abstract-body strong { color: var(--cream); }
+
+.abstract-section {
+  margin-top: 1.4rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border);
+}
+
+.abstract-section h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  margin-bottom: 0.7rem;
+}
+
+.tech-pills {
+  display: flex; flex-wrap: wrap; gap: 0.5rem;
+}
+
+.tech-pill {
+  padding: 0.3rem 0.75rem;
+  background: rgba(255,200,66,0.08);
+  border: 1px solid rgba(196,135,94,0.2);
+  border-radius: 100px;
+  font-size: 0.72rem;
+  color: var(--gold);
+}
+
+/* ── About button in header ─── */
+.about-btn {
+  font-size: 0.72rem;
+  padding: 0.35rem 0.85rem;
+  background: rgba(90,80,160,0.05);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+  margin-right: 0.5rem;
+}
+.about-btn:hover { border-color: rgba(245,200,66,0.4); color: var(--gold); }
+
+/* Responsive */
+@media (max-width: 640px) {
+  header { padding: 1.2rem 1.5rem; }
+  .form-card { margin: 1rem; padding: 1.5rem; }
+  .form-grid { grid-template-columns: 1fr; }
+  .agent-section { margin: 0 1rem 2rem; }
+  .college-card { grid-template-columns: auto 1fr; }
+  .college-score { grid-column: 2; }
+  .college-why { grid-column: 1 / -1; }
+  .stats-row { grid-template-columns: 1fr; }
+}
+
+.divider {
+  height: 1px; background: var(--border);
+  margin: 1.5rem 0;
+}
+
+.error-msg {
+  background: rgba(255,80,80,0.1);
+  border: 1px solid rgba(255,80,80,0.2);
+  color: #d46868;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+</style>
+</head>
+<body>
+<!-- ── LOGIN PAGE ─────────────────────────────────────────────── -->
+<div id="login-page">
+  <div class="login-box">
+    <!-- Logo -->
+    <div class="login-logo">
+      <div class="logo-icon">🎓</div>
+      <div class="logo-text">Rank<span>Radar</span></div>
+    </div>
+    <p class="login-subtitle">India's AI-powered college finder.<br>Sign in to save your searches and get personalised picks.</p>
+
+    <!-- Tabs -->
+    <div class="auth-tabs">
+      <div class="auth-tab active" onclick="switchTab('login')">Sign In</div>
+      <div class="auth-tab" onclick="switchTab('signup')">Create Account</div>
+    </div>
+
+    <!-- Login Form -->
+    <div class="auth-form active" id="form-login">
+      <div class="login-error" id="login-error"></div>
+      <div class="login-success" id="login-success"></div>
+
+      <div class="form-group">
+        <label>Email Address</label>
+        <div class="input-with-icon">
+          <span class="input-icon">✉️</span>
+          <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-with-icon">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="login-password" placeholder="Enter your password" autocomplete="current-password" />
+          <span class="password-toggle" onclick="togglePassword('login-password', this)">👁️</span>
+        </div>
+      </div>
+
+      <span class="forgot-link" onclick="showForgot()">Forgot password?</span>
+
+      <button class="auth-btn" onclick="doLogin()">Sign In →</button>
+
+      <div class="divider-or">or continue with</div>
+
+      <div class="social-btns">
+        <button class="social-btn" onclick="socialLogin('Google')">
+          <svg width="15" height="15" viewBox="0 0 24 24"><path fill="#EA4335" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#4285F4" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Google
+        </button>
+        <button class="social-btn" onclick="socialLogin('LinkedIn')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </button>
+      </div>
+
+      <p class="terms-note">By signing in you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+    </div>
+
+    <!-- Signup Form -->
+    <div class="auth-form" id="form-signup">
+      <div class="login-error" id="signup-error"></div>
+      <div class="login-success" id="signup-success"></div>
+
+      <div class="form-group">
+        <label>Full Name</label>
+        <div class="input-with-icon">
+          <span class="input-icon">👤</span>
+          <input type="text" id="signup-name" placeholder="Aarav Kumar" autocomplete="name" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Email Address</label>
+        <div class="input-with-icon">
+          <span class="input-icon">✉️</span>
+          <input type="email" id="signup-email" placeholder="you@example.com" autocomplete="email" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-with-icon">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="signup-password" placeholder="Create a strong password" oninput="checkStrength(this.value)" autocomplete="new-password" />
+          <span class="password-toggle" onclick="togglePassword('signup-password', this)">👁️</span>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+      </div>
+
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <div class="input-with-icon">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="signup-confirm" placeholder="Re-enter password" autocomplete="new-password" />
+        </div>
+      </div>
+
+      <button class="auth-btn" onclick="doSignup()">Create Account →</button>
+
+      <div class="divider-or">or sign up with</div>
+      <div class="social-btns">
+        <button class="social-btn" onclick="socialLogin('Google')">
+          <svg width="15" height="15" viewBox="0 0 24 24"><path fill="#EA4335" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#4285F4" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Google
+        </button>
+        <button class="social-btn" onclick="socialLogin('LinkedIn')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </button>
+      </div>
+
+      <p class="terms-note">By signing up you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── ABSTRACT MODAL ─────────────────────────────────────────── -->
+<div id="abstract-modal">
+  <div class="abstract-box">
+    <button class="abstract-close" onclick="closeAbstract()">✕</button>
+    <div class="abstract-tag">Project Abstract</div>
+    <h2>RankRadar — <em>AI-Powered</em><br>India College Finder</h2>
+    <div class="abstract-body">
+      <p><strong>Overview:</strong> RankRadar is an intelligent, single-page web application designed to help Indian students navigate the complex and often overwhelming process of college selection after competitive entrance examinations.</p>
+      <p><strong>Problem Statement:</strong> Each year, millions of Indian students appear for entrance exams like JEE, NEET, CAT, CLAT, GATE, and state-level tests. Choosing the right college from thousands of options — while balancing rank eligibility, fees, location, course preferences, and career priorities — is a highly stressful multi-variable decision that most students and families are ill-equipped to make alone.</p>
+      <p><strong>Solution:</strong> RankRadar combines a structured local college database (curated with NIRF rankings, fee data, placement statistics, and eligibility cut-offs) with a live AI agent powered by Claude to deliver personalised, ranked college recommendations in seconds. The system pre-filters colleges by exam compatibility, rank bracket, budget ceiling, and geographic preference, then scores each institution using a weighted multi-factor algorithm before presenting the results with AI-generated contextual explanations tailored to each student's profile.</p>
+      <div class="abstract-section">
+        <h3>Key Features</h3>
+        <p>Support for 25+ entrance exams across engineering, medical, law, management and postgraduate disciplines. Dynamic rank/percentile parsing. Budget slider with real-time annual fee filtering. Category-based reservation adjustments (SC/ST/OBC/EWS). Priority weighting across placements, research, campus life, fees, and NIRF rank. AI-generated personalised summaries and actionable pro tips per student profile.</p>
+      </div>
+      <div class="abstract-section">
+        <h3>Architecture</h3>
+        <p>Built as a fully self-contained HTML/CSS/JavaScript single-page app with zero backend dependencies. Authentication is handled client-side (demo mode) with session state stored in memory. The AI agent communicates directly with the Anthropic Claude API from the browser for real-time college analysis.</p>
+      </div>
+      <div class="abstract-section">
+        <h3>Tech Stack</h3>
+        <div class="tech-pills">
+          <span class="tech-pill">HTML5</span>
+          <span class="tech-pill">CSS3 (Custom Properties)</span>
+          <span class="tech-pill">Vanilla JavaScript</span>
+          <span class="tech-pill">Claude API (Sonnet)</span>
+          <span class="tech-pill">DM Sans & Syne Fonts</span>
+          <span class="tech-pill">NIRF 2024 Data</span>
+        </div>
+      </div>
+      <div class="abstract-section">
+        <h3>Target Users</h3>
+        <p>Class 12 students and recent graduates appearing for national and state-level entrance examinations in India. The tool is particularly valuable for first-generation college students who lack access to professional counselling services.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN APP ───────────────────────────────────────────────── -->
+<div class="wrapper" id="main-app" style="display:none">
+
+<!-- Header -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">🎓</div>
+    <div class="logo-text">Rank<span>Radar</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:0.5rem">
+    <button class="about-btn" onclick="openAbstract()">📄 About</button>
+    <div class="header-user">
+      <div class="user-avatar" id="user-avatar">A</div>
+      <span id="user-name-display" style="font-size:0.8rem;color:var(--muted)">User</span>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+  </div>
+</header>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-tag">Powered by AI · For Indian Students</div>
+  <h1>Find your <em>perfect college</em> in India</h1>
+  <p>Enter your entrance exam rank, budget, and location preferences — our AI agent queries the college database and ranks the best options just for you.</p>
+</div>
+
+<!-- Form -->
+<div class="form-card">
+  <div class="form-section-title">📋 Your Profile</div>
+  <div class="form-grid">
+
+    <div class="form-group">
+      <label>Entrance Exam</label>
+      <select id="exam">
+        <option value="">Select exam...</option>
+        <optgroup label="── National Engineering ──">
+        <option value="JEE Main">JEE Main</option>
+        <option value="JEE Advanced">JEE Advanced</option>
+        <option value="BITSAT">BITSAT (BITS Pilani)</option>
+        <option value="VITEEE">VITEEE (VIT)</option>
+        <option value="SRMJEEE">SRMJEEE (SRM)</option>
+        <option value="MET">MET (Manipal)</option>
+        <option value="COMEDK">COMEDK (Karnataka Private)</option>
+        </optgroup>
+        <optgroup label="── State Engineering ──">
+        <option value="KCET">KCET (Karnataka)</option>
+        <option value="EMCET">TS EMCET (Telangana)</option>
+        <option value="EAPCET">AP EAPCET (Andhra Pradesh)</option>
+        <option value="MHT-CET">MHT-CET (Maharashtra)</option>
+        <option value="WBJEE">WBJEE (West Bengal)</option>
+        <option value="TNEA">TNEA (Tamil Nadu)</option>
+        <option value="GUJCET">GUJCET (Gujarat)</option>
+        <option value="KEAM">KEAM (Kerala)</option>
+        <option value="REAP">REAP (Rajasthan)</option>
+        <option value="MPDT">MP DTE (Madhya Pradesh)</option>
+        <option value="UPSEE">UPSEE / AKTU (Uttar Pradesh)</option>
+        </optgroup>
+        <optgroup label="── Medical ──">
+        <option value="NEET">NEET (UG) — MBBS/BDS</option>
+        </optgroup>
+        <optgroup label="── Law ──">
+        <option value="CLAT">CLAT (NLUs)</option>
+        <option value="AILET">AILET (NLU Delhi)</option>
+        <option value="LSAT">LSAT India</option>
+        </optgroup>
+        <optgroup label="── Management ──">
+        <option value="CAT">CAT (IIMs)</option>
+        <option value="XAT">XAT (XLRI)</option>
+        <option value="MAT">MAT</option>
+        <option value="CMAT">CMAT</option>
+        <option value="SNAP">SNAP (Symbiosis)</option>
+        <option value="NMAT">NMAT (NMIMS)</option>
+        </optgroup>
+        <optgroup label="── Postgrad / Research ──">
+        <option value="GATE">GATE (M.Tech / PSUs)</option>
+        <option value="CUET">CUET (Central Universities)</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Your Rank / Score / Percentile</label>
+      <input type="text" id="rank" placeholder="e.g. 5000, 95 percentile, 650/720" />
+    </div>
+
+    <div class="form-group">
+      <label>Category</label>
+      <select id="category">
+        <option value="General">General (UR)</option>
+        <option value="OBC">OBC</option>
+        <option value="SC">SC</option>
+        <option value="ST">ST</option>
+        <option value="EWS">EWS</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Preferred Stream / Course</label>
+      <select id="stream">
+        <option value="">Any / Not sure</option>
+        <option value="Computer Science Engineering">CSE / IT</option>
+        <option value="Electronics Engineering">Electronics / ECE</option>
+        <option value="Mechanical Engineering">Mechanical Engineering</option>
+        <option value="Civil Engineering">Civil Engineering</option>
+        <option value="Medicine (MBBS)">Medicine (MBBS)</option>
+        <option value="Law (LLB)">Law (LLB)</option>
+        <option value="MBA">MBA</option>
+        <option value="Arts & Humanities">Arts & Humanities</option>
+        <option value="Science (BSc)">Science (BSc)</option>
+        <option value="Commerce (BCom)">Commerce / BBA</option>
+      </select>
+    </div>
+
+    <div class="form-group full">
+      <label>Annual Budget (Tuition + Living) — ₹<span id="budget-val">6 Lakhs</span>/year</label>
+      <input type="range" id="budget" min="1" max="30" value="6"
+        oninput="updateBudget(this.value)" />
+    </div>
+
+  </div>
+
+  <div class="form-section-title">📍 Location Preferences</div>
+  <div class="form-group" style="margin-bottom:1.5rem">
+    <label>Preferred States / Regions (select all that apply)</label>
+    <div class="checkbox-group" id="location-chips">
+      <div class="chip" onclick="toggleChip(this)">Delhi / NCR</div>
+      <div class="chip" onclick="toggleChip(this)">Maharashtra</div>
+      <div class="chip" onclick="toggleChip(this)">Tamil Nadu</div>
+      <div class="chip" onclick="toggleChip(this)">Karnataka</div>
+      <div class="chip" onclick="toggleChip(this)">Telangana / AP</div>
+      <div class="chip" onclick="toggleChip(this)">Gujarat</div>
+      <div class="chip" onclick="toggleChip(this)">West Bengal</div>
+      <div class="chip" onclick="toggleChip(this)">Uttar Pradesh</div>
+      <div class="chip" onclick="toggleChip(this)">Rajasthan</div>
+      <div class="chip" onclick="toggleChip(this)">Punjab / Haryana</div>
+      <div class="chip" onclick="toggleChip(this)">Madhya Pradesh</div>
+      <div class="chip" onclick="toggleChip(this)">Kerala</div>
+      <div class="chip" onclick="toggleChip(this)">Anywhere in India</div>
+    </div>
+  </div>
+
+  <div class="form-section-title">⚙️ Priorities</div>
+  <div class="form-group" style="margin-bottom:1.5rem">
+    <label>What matters most to you? (select up to 3)</label>
+    <div class="checkbox-group" id="priority-chips">
+      <div class="chip" onclick="toggleChip(this)">Placement & Jobs</div>
+      <div class="chip" onclick="toggleChip(this)">Research Quality</div>
+      <div class="chip" onclick="toggleChip(this)">Campus Life</div>
+      <div class="chip" onclick="toggleChip(this)">Low Fees</div>
+      <div class="chip" onclick="toggleChip(this)">NIRF Ranking</div>
+      <div class="chip" onclick="toggleChip(this)">Hostel Facilities</div>
+      <div class="chip" onclick="toggleChip(this)">City Location</div>
+      <div class="chip" onclick="toggleChip(this)">Alumni Network</div>
+    </div>
+  </div>
+
+  <div class="form-group full" style="margin-bottom:1.5rem">
+    <label>Anything else the agent should know? (optional)</label>
+    <textarea id="notes" rows="2" placeholder="e.g. I prefer a college near home, interested in startup culture, need scholarship options..."></textarea>
+  </div>
+
+  <button class="submit-btn" onclick="findColleges()" id="find-btn">
+    🔍 Find My Best Colleges
+  </button>
+</div>
+
+<!-- Agent Output -->
+<div class="agent-section" id="agent-section">
+  <div class="agent-header">
+    <div class="agent-avatar">🤖</div>
+    <div class="agent-label">
+      <strong>RankRadar Agent</strong>
+      Querying database · Ranking results
+    </div>
+  </div>
+  <div id="agent-output"></div>
+</div>
+
+</div><!-- /wrapper -->
+</div><!-- /main-app -->
+
+<script>
+// ── Budget slider ──────────────────────────────────────────────
+function updateBudget(val) {
+  document.getElementById('budget-val').textContent = val + ' Lakh' + (val > 1 ? 's' : '');
+  const pct = ((val - 1) / 29 * 100).toFixed(1);
+  document.getElementById('budget').style.setProperty('--val', pct + '%');
+}
+updateBudget(6);
+
+// ── Chip toggle ────────────────────────────────────────────────
+function toggleChip(el) {
+  el.classList.toggle('selected');
+}
+
+function getSelectedChips(containerId) {
+  return [...document.querySelectorAll(`#${containerId} .chip.selected`)]
+    .map(c => c.textContent.trim());
+}
+
+// ── College Database ───────────────────────────────────────────
+// Fields:
+//   nirfRank    = rank within its NIRF category (Engineering/Medical/Law/Management/University)
+//   nirfCat     = NIRF category label shown on card
+//   prestige    = 0-100 internal quality score used for sorting (NOT the raw nirfRank)
+//   type        = institution type shown on card
+const COLLEGE_DB = [
+
+  // ═══════════════════════════════════════════════
+  // IITs — JEE Advanced  (NIRF: Engineering list)
+  // ═══════════════════════════════════════════════
+  { name:"IIT Madras",            city:"Chennai",          state:"Tamil Nadu",      type:"IIT (Central Govt.)", exams:["JEE Advanced"], rankRange:[1,700],   fees:2.5,  streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:1,  nirfCat:"Engg #1",  prestige:99, placements:97, research:99, campus:95 },
+  { name:"IIT Delhi",             city:"New Delhi",        state:"Delhi / NCR",     type:"IIT (Central Govt.)", exams:["JEE Advanced"], rankRange:[1,600],   fees:2.5,  streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:2,  nirfCat:"Engg #2",  prestige:98, placements:98, research:98, campus:93 },
+  { name:"IIT Bombay",            city:"Mumbai",           state:"Maharashtra",     type:"IIT (Central Govt.)", exams:["JEE Advanced"], rankRange:[1,500],   fees:2.5,  streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:3,  nirfCat:"Engg #3",  prestige:98, placements:98, research:99, campus:95 },
+  { name:"IIT Kanpur",            city:"Kanpur",           state:"Uttar Pradesh",   type:"IIT (Central Govt.)", exams:["JEE Advanced"], rankRange:[1,1000],  fees:2.5,  streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:4,  nirfCat:"Engg #4",  prestige:97, placements:96, research:97, campus:88 },
+  { name:"IIT Kharagpur",         city:"Kharagpur",        state:"West Bengal",     type:"IIT (Central Govt.)", exams:["JEE Advanced"], rankRange:[1,2000],  fees:2.5,  streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:5,  nirfCat:"Engg #5",  prestige:96, placements:95, research:96, campus:90 },
+  { name:"IIT Roorkee",           city:"Roorkee",          state:"Uttarakhand",     type:"IIT (Central Govt.)", exams:["JEE Advanced"], rankRange:[1,3000],  fees:2.5,  streams:["Computer Science Engineering","Electronics Engineering","Civil Engineering"],                  nirfRank:6,  nirfCat:"Engg #6",  prestige:95, placements:93, research:94, campus:87 },
+  { name:"IIT Guwahati",          city:"Guwahati",         state:"Assam",           type:"IIT (Central Govt.)", exams:["JEE Advanced"], rankRange:[1,4000],  fees:2.5,  streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:7,  nirfCat:"Engg #7",  prestige:93, placements:91, research:92, campus:86 },
+  { name:"IIT Hyderabad",         city:"Hyderabad",        state:"Telangana / AP",  type:"IIT (Central Govt.)", exams:["JEE Advanced"], rankRange:[1,5000],  fees:2.5,  streams:["Computer Science Engineering","Electronics Engineering"],                                      nirfRank:8,  nirfCat:"Engg #8",  prestige:91, placements:92, research:93, campus:85 },
+  { name:"IIT BHU Varanasi",      city:"Varanasi",         state:"Uttar Pradesh",   type:"IIT (Central Govt.)", exams:["JEE Advanced"], rankRange:[1,7000],  fees:2.5,  streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:10, nirfCat:"Engg #10", prestige:89, placements:90, research:91, campus:83 },
+  { name:"IIT Indore",            city:"Indore",           state:"Madhya Pradesh",  type:"IIT (Central Govt.)", exams:["JEE Advanced"], rankRange:[1,6000],  fees:2.5,  streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:12, nirfCat:"Engg #12", prestige:88, placements:89, research:90, campus:84 },
+  { name:"IIT Gandhinagar",       city:"Gandhinagar",      state:"Gujarat",         type:"IIT (Central Govt.)", exams:["JEE Advanced"], rankRange:[1,8000],  fees:2.5,  streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:14, nirfCat:"Engg #14", prestige:87, placements:88, research:90, campus:87 },
+  { name:"IIT Patna",             city:"Patna",            state:"Bihar",           type:"IIT (Central Govt.)", exams:["JEE Advanced"], rankRange:[1,10000], fees:2.5,  streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:18, nirfCat:"Engg #18", prestige:84, placements:85, research:86, campus:80 },
+  { name:"IIT Jodhpur",           city:"Jodhpur",          state:"Rajasthan",       type:"IIT (Central Govt.)", exams:["JEE Advanced"], rankRange:[1,11000], fees:2.5,  streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:20, nirfCat:"Engg #20", prestige:83, placements:84, research:85, campus:79 },
+  { name:"IIT Tirupati",          city:"Tirupati",         state:"Telangana / AP",  type:"IIT (Central Govt.)", exams:["JEE Advanced"], rankRange:[1,12000], fees:2.5,  streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:22, nirfCat:"Engg #22", prestige:82, placements:83, research:84, campus:78 },
+  { name:"IIT Palakkad",          city:"Palakkad",         state:"Kerala",          type:"IIT (Central Govt.)", exams:["JEE Advanced"], rankRange:[1,13000], fees:2.5,  streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:24, nirfCat:"Engg #24", prestige:81, placements:82, research:83, campus:77 },
+
+  // ═══════════════════════════════════════════════
+  // NITs — JEE Main  (NIRF: Engineering list)
+  // ═══════════════════════════════════════════════
+  { name:"NIT Trichy",            city:"Tiruchirappalli",  state:"Tamil Nadu",      type:"NIT (Central Govt.)", exams:["JEE Main"], rankRange:[1,8000],   fees:1.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:9,  nirfCat:"Engg #9",  prestige:90, placements:90, research:85, campus:82 },
+  { name:"NIT Rourkela",          city:"Rourkela",         state:"Odisha",          type:"NIT (Central Govt.)", exams:["JEE Main"], rankRange:[1,18000],  fees:1.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:16, nirfCat:"Engg #16", prestige:85, placements:84, research:76, campus:76 },
+  { name:"NIT Warangal",          city:"Warangal",         state:"Telangana / AP",  type:"NIT (Central Govt.)", exams:["JEE Main"], rankRange:[1,10000],  fees:1.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:17, nirfCat:"Engg #17", prestige:85, placements:89, research:82, campus:80 },
+  { name:"NIT Surathkal (NITK)",  city:"Mangalore",        state:"Karnataka",       type:"NIT (Central Govt.)", exams:["JEE Main"], rankRange:[1,12000],  fees:1.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:19, nirfCat:"Engg #19", prestige:84, placements:87, research:80, campus:79 },
+  { name:"NIT Calicut",           city:"Kozhikode",        state:"Kerala",          type:"NIT (Central Govt.)", exams:["JEE Main"], rankRange:[1,15000],  fees:1.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:23, nirfCat:"Engg #23", prestige:82, placements:85, research:78, campus:78 },
+  { name:"NIT Allahabad (MNNIT)", city:"Prayagraj",        state:"Uttar Pradesh",   type:"NIT (Central Govt.)", exams:["JEE Main"], rankRange:[1,22000],  fees:1.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:26, nirfCat:"Engg #26", prestige:80, placements:82, research:74, campus:75 },
+  { name:"MNIT Jaipur",           city:"Jaipur",           state:"Rajasthan",       type:"NIT (Central Govt.)", exams:["JEE Main"], rankRange:[1,20000],  fees:1.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:28, nirfCat:"Engg #28", prestige:79, placements:83, research:75, campus:76 },
+  { name:"VNIT Nagpur",           city:"Nagpur",           state:"Maharashtra",     type:"NIT (Central Govt.)", exams:["JEE Main"], rankRange:[1,25000],  fees:1.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:29, nirfCat:"Engg #29", prestige:79, placements:82, research:74, campus:75 },
+  { name:"NIT Surat (SVNIT)",     city:"Surat",            state:"Gujarat",         type:"NIT (Central Govt.)", exams:["JEE Main"], rankRange:[1,28000],  fees:1.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:31, nirfCat:"Engg #31", prestige:78, placements:81, research:73, campus:74 },
+  { name:"NIT Kurukshetra",       city:"Kurukshetra",      state:"Punjab / Haryana",type:"NIT (Central Govt.)", exams:["JEE Main"], rankRange:[1,30000],  fees:1.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:33, nirfCat:"Engg #33", prestige:77, placements:80, research:72, campus:73 },
+  { name:"NIT Durgapur",          city:"Durgapur",         state:"West Bengal",     type:"NIT (Central Govt.)", exams:["JEE Main"], rankRange:[1,32000],  fees:1.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:35, nirfCat:"Engg #35", prestige:76, placements:79, research:71, campus:72 },
+  { name:"NIT Silchar",           city:"Silchar",          state:"Assam",           type:"NIT (Central Govt.)", exams:["JEE Main"], rankRange:[1,35000],  fees:1.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:44, nirfCat:"Engg #44", prestige:73, placements:78, research:70, campus:72 },
+  { name:"MANIT Bhopal",          city:"Bhopal",           state:"Madhya Pradesh",  type:"NIT (Central Govt.)", exams:["JEE Main","MPDT"], rankRange:[1,35000], fees:1.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:37, nirfCat:"Engg #37", prestige:75, placements:80, research:72, campus:74 },
+
+  // ═══════════════════════════════════════════════
+  // IIITs — JEE Main / CUET
+  // ═══════════════════════════════════════════════
+  { name:"IIIT Hyderabad",        city:"Hyderabad",        state:"Telangana / AP",  type:"IIIT (Central Govt.)", exams:["JEE Main","CUET"], rankRange:[1,5000],  fees:3.5, streams:["Computer Science Engineering","Electronics Engineering"], nirfRank:13, nirfCat:"Engg #13", prestige:89, placements:95, research:90, campus:83 },
+  { name:"IIIT Delhi",            city:"New Delhi",        state:"Delhi / NCR",     type:"IIIT (State PPP)",     exams:["JEE Main","CUET"], rankRange:[1,8000],  fees:4.0, streams:["Computer Science Engineering","Electronics Engineering"], nirfRank:20, nirfCat:"Engg #20", prestige:84, placements:93, research:87, campus:80 },
+  { name:"IIIT Bangalore (IIITB)",city:"Bangalore",        state:"Karnataka",       type:"IIIT (Private)",       exams:["JEE Main","GATE"], rankRange:[1,15000], fees:5.0, streams:["Computer Science Engineering","Electronics Engineering"], nirfRank:22, nirfCat:"Engg #22", prestige:83, placements:92, research:88, campus:82 },
+  { name:"IIIT Allahabad",        city:"Prayagraj",        state:"Uttar Pradesh",   type:"IIIT (Central Govt.)", exams:["JEE Main"],        rankRange:[1,12000], fees:2.5, streams:["Computer Science Engineering","Electronics Engineering"], nirfRank:25, nirfCat:"Engg #25", prestige:81, placements:91, research:85, campus:79 },
+  { name:"IIIT Gwalior (ABV-IIITM)",city:"Gwalior",       state:"Madhya Pradesh",  type:"IIIT (Central Govt.)", exams:["JEE Main"],        rankRange:[1,18000], fees:2.2, streams:["Computer Science Engineering","Electronics Engineering"], nirfRank:30, nirfCat:"Engg #30", prestige:79, placements:87, research:82, campus:76 },
+  { name:"IIIT Pune",             city:"Pune",             state:"Maharashtra",     type:"IIIT (PPP)",           exams:["JEE Main","CUET"], rankRange:[1,20000], fees:3.0, streams:["Computer Science Engineering","Electronics Engineering"], nirfRank:35, nirfCat:"Engg #35", prestige:77, placements:88, research:80, campus:78 },
+  { name:"IIIT Vadodara",         city:"Vadodara",         state:"Gujarat",         type:"IIIT (PPP)",           exams:["JEE Main"],        rankRange:[1,25000], fees:2.0, streams:["Computer Science Engineering","Electronics Engineering"], nirfRank:40, nirfCat:"Engg #40", prestige:75, placements:85, research:78, campus:75 },
+  { name:"IIIT Kota",             city:"Kota",             state:"Rajasthan",       type:"IIIT (PPP)",           exams:["JEE Main"],        rankRange:[1,30000], fees:2.0, streams:["Computer Science Engineering","Electronics Engineering"], nirfRank:45, nirfCat:"Engg #45", prestige:73, placements:83, research:75, campus:73 },
+  { name:"IIIT Kalyani",          city:"Kalyani",          state:"West Bengal",     type:"IIIT (PPP)",           exams:["JEE Main","CUET"], rankRange:[1,35000], fees:1.8, streams:["Computer Science Engineering","Electronics Engineering"], nirfRank:50, nirfCat:"Engg #50", prestige:70, placements:82, research:74, campus:72 },
+
+  // ═══════════════════════════════════════════════
+  // IISc + Central Research
+  // ═══════════════════════════════════════════════
+  { name:"IISc Bangalore",        city:"Bangalore",        state:"Karnataka",       type:"Central Research Inst.", exams:["GATE","JEE Advanced"], rankRange:[1,200],  fees:1.0, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:1,  nirfCat:"Univ #1",  prestige:100, placements:96, research:100, campus:94 },
+
+  // ═══════════════════════════════════════════════
+  // Govt. Engineering — State & DTU class
+  // ═══════════════════════════════════════════════
+  { name:"Delhi Technological University (DTU)", city:"New Delhi", state:"Delhi / NCR", type:"State Govt. University", exams:["JEE Main"], rankRange:[1,40000], fees:1.2, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:36, nirfCat:"Engg #36", prestige:78, placements:86, research:78, campus:78 },
+  { name:"NSUT Delhi",            city:"New Delhi",        state:"Delhi / NCR",     type:"State Govt. University", exams:["JEE Main"], rankRange:[1,50000], fees:1.1, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:46, nirfCat:"Engg #46", prestige:73, placements:84, research:74, campus:76 },
+  { name:"PEC Chandigarh",        city:"Chandigarh",       state:"Punjab / Haryana",type:"State Govt. University", exams:["JEE Main"], rankRange:[1,55000], fees:1.0, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:51, nirfCat:"Engg #51", prestige:72, placements:80, research:72, campus:75 },
+  { name:"UVCE Bangalore",        city:"Bangalore",        state:"Karnataka",       type:"State Govt. University", exams:["KCET"],     rankRange:[1,5000],  fees:0.3, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:38, nirfCat:"Engg #38", prestige:76, placements:86, research:76, campus:78 },
+  { name:"Jadavpur University",   city:"Kolkata",          state:"West Bengal",     type:"State Govt. University", exams:["WBJEE","JEE Main"], rankRange:[1,30000], fees:0.3, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:14, nirfCat:"Univ #14", prestige:84, placements:84, research:82, campus:79 },
+  { name:"IIEST Shibpur",         city:"Howrah",           state:"West Bengal",     type:"Central Govt. (Deemed)", exams:["WBJEE","JEE Main"], rankRange:[1,40000], fees:0.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:37, nirfCat:"Engg #37", prestige:76, placements:80, research:74, campus:74 },
+  { name:"COEP Pune",             city:"Pune",             state:"Maharashtra",     type:"State Govt. (Autonomous)",exams:["MHT-CET","JEE Main"], rankRange:[1,60000], fees:0.8, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:46, nirfCat:"Engg #46", prestige:74, placements:82, research:74, campus:77 },
+  { name:"VJTI Mumbai",           city:"Mumbai",           state:"Maharashtra",     type:"State Govt. (Autonomous)",exams:["MHT-CET","JEE Main"], rankRange:[1,50000], fees:0.6, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:42, nirfCat:"Engg #42", prestige:75, placements:83, research:73, campus:76 },
+  { name:"ICT Mumbai",            city:"Mumbai",           state:"Maharashtra",     type:"State Govt. (Deemed)",    exams:["MHT-CET","JEE Main"], rankRange:[1,40000], fees:1.2, streams:["Computer Science Engineering","Civil Engineering"],                                      nirfRank:32, nirfCat:"Engg #32", prestige:79, placements:84, research:80, campus:75 },
+  { name:"Osmania University College of Engineering", city:"Hyderabad", state:"Telangana / AP", type:"State Govt. University", exams:["EMCET"], rankRange:[1,5000], fees:0.4, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:41, nirfCat:"Engg #41", prestige:74, placements:82, research:74, campus:76 },
+  { name:"JNTUH College of Engineering", city:"Hyderabad", state:"Telangana / AP", type:"State Govt. University", exams:["EMCET"], rankRange:[1,8000], fees:0.4, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:48, nirfCat:"Engg #48", prestige:72, placements:80, research:72, campus:74 },
+  { name:"Andhra University College of Engineering", city:"Visakhapatnam", state:"Telangana / AP", type:"State Govt. University", exams:["EAPCET"], rankRange:[1,5000], fees:0.35, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:43, nirfCat:"Engg #43", prestige:73, placements:81, research:73, campus:75 },
+  { name:"JNTUA College of Engineering Anantapur", city:"Anantapur", state:"Telangana / AP", type:"State Govt. University", exams:["EAPCET"], rankRange:[1,8000], fees:0.35, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:52, nirfCat:"Engg #52", prestige:71, placements:78, research:70, campus:72 },
+  { name:"SVU College of Engineering Tirupati", city:"Tirupati", state:"Telangana / AP", type:"State Govt. University", exams:["EAPCET"], rankRange:[1,12000], fees:0.3, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:55, nirfCat:"Engg #55", prestige:70, placements:77, research:71, campus:73 },
+  { name:"HBTU Kanpur",           city:"Kanpur",           state:"Uttar Pradesh",   type:"State Govt. University", exams:["UPSEE","JEE Main"], rankRange:[1,50000], fees:0.6, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:53, nirfCat:"Engg #53", prestige:70, placements:78, research:68, campus:72 },
+  { name:"CEG Anna University",   city:"Chennai",          state:"Tamil Nadu",      type:"State Govt. University", exams:["TNEA","JEE Main"], rankRange:[1,30000], fees:0.4, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:27, nirfCat:"Engg #27", prestige:80, placements:84, research:75, campus:75 },
+  { name:"GCT Coimbatore",        city:"Coimbatore",       state:"Tamil Nadu",      type:"State Govt.",            exams:["TNEA"], rankRange:[1,60000], fees:0.3, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"],   nirfRank:57, nirfCat:"Engg #57", prestige:70, placements:79, research:68, campus:74 },
+  { name:"LDCE Ahmedabad",        city:"Ahmedabad",        state:"Gujarat",         type:"State Govt.",            exams:["GUJCET","JEE Main"], rankRange:[1,40000], fees:0.4, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:49, nirfCat:"Engg #49", prestige:73, placements:80, research:70, campus:73 },
+  { name:"CET Thiruvananthapuram", city:"Thiruvananthapuram", state:"Kerala",       type:"State Govt.",            exams:["KEAM","JEE Main"], rankRange:[1,20000], fees:0.4, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:40, nirfCat:"Engg #40", prestige:74, placements:82, research:72, campus:74 },
+  { name:"SGSITS Indore",         city:"Indore",           state:"Madhya Pradesh",  type:"State Govt.",            exams:["MPDT","JEE Main"], rankRange:[1,80000], fees:0.6, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:60, nirfCat:"Engg #60", prestige:68, placements:76, research:64, campus:70 },
+  { name:"Kalyani Government Engineering College", city:"Kalyani", state:"West Bengal", type:"State Govt.", exams:["WBJEE"], rankRange:[1,100000], fees:0.2, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:85, nirfCat:"Engg #85", prestige:62, placements:72, research:58, campus:68 },
+
+  // ═══════════════════════════════════════════════
+  // BITSAT — BITS Campuses (Private Deemed)
+  // ═══════════════════════════════════════════════
+  { name:"BITS Pilani",           city:"Pilani",           state:"Rajasthan",       type:"Private Deemed Univ.",  exams:["BITSAT"], rankRange:[1,50000],  fees:6.0, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:16, nirfCat:"Engg #16", prestige:88, placements:94, research:89, campus:90 },
+  { name:"BITS Goa",              city:"Goa",              state:"Goa",             type:"Private Deemed Univ.",  exams:["BITSAT"], rankRange:[1,70000],  fees:5.8, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:21, nirfCat:"Engg #21", prestige:85, placements:91, research:85, campus:92 },
+  { name:"BITS Hyderabad",        city:"Hyderabad",        state:"Telangana / AP",  type:"Private Deemed Univ.",  exams:["BITSAT"], rankRange:[1,80000],  fees:5.8, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:24, nirfCat:"Engg #24", prestige:84, placements:92, research:86, campus:88 },
+
+  // ═══════════════════════════════════════════════
+  // VIT Campuses — VITEEE / JEE Main
+  // ═══════════════════════════════════════════════
+  { name:"VIT Vellore",           city:"Vellore",          state:"Tamil Nadu",      type:"Private Deemed Univ.",  exams:["VITEEE","JEE Main"], rankRange:[1,150000], fees:4.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:11, nirfCat:"Engg #11", prestige:82, placements:88, research:75, campus:88 },
+  { name:"VIT Chennai",           city:"Chennai",          state:"Tamil Nadu",      type:"Private Deemed Univ.",  exams:["VITEEE","JEE Main"], rankRange:[1,200000], fees:4.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:15, nirfCat:"Engg #15", prestige:80, placements:86, research:73, campus:85 },
+  { name:"VIT AP",                city:"Amaravati",        state:"Telangana / AP",  type:"Private Deemed Univ.",  exams:["VITEEE","EAPCET"], rankRange:[1,250000],  fees:4.0, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:32, nirfCat:"Engg #32", prestige:74, placements:84, research:70, campus:82 },
+  { name:"VIT Bhopal",            city:"Bhopal",           state:"Madhya Pradesh",  type:"Private Deemed Univ.",  exams:["VITEEE","JEE Main"], rankRange:[1,300000], fees:3.8, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],             nirfRank:45, nirfCat:"Engg #45", prestige:70, placements:82, research:68, campus:80 },
+  { name:"Amrita Vishwa Vidyapeetham", city:"Coimbatore",  state:"Tamil Nadu",      type:"Private Deemed Univ.",  exams:["JEE Main","TNEA","NEET"], rankRange:[1,300000], fees:4.0, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Medicine (MBBS)"], nirfRank:7, nirfCat:"Univ #7",  prestige:82, placements:87, research:82, campus:84 },
+
+  // ═══════════════════════════════════════════════
+  // SRM Campuses — SRMJEEE / JEE Main
+  // ═══════════════════════════════════════════════
+  { name:"SRM KTR Chennai",       city:"Chennai",          state:"Tamil Nadu",      type:"Private Deemed Univ.",  exams:["SRMJEEE","JEE Main"], rankRange:[1,300000], fees:3.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:21, nirfCat:"Engg #21", prestige:76, placements:82, research:68, campus:85 },
+  { name:"SRM Amaravati",         city:"Amaravati",        state:"Telangana / AP",  type:"Private Deemed Univ.",  exams:["SRMJEEE","EAPCET"], rankRange:[1,400000],  fees:3.2, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:50, nirfCat:"Engg #50", prestige:66, placements:79, research:64, campus:80 },
+
+  // ═══════════════════════════════════════════════
+  // Manipal Campuses — MET / JEE Main / KCET
+  // ═══════════════════════════════════════════════
+  { name:"Manipal Institute of Technology", city:"Manipal", state:"Karnataka",     type:"Private Deemed Univ.",  exams:["MET","JEE Main","KCET"], rankRange:[1,200000], fees:5.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:30, nirfCat:"Engg #30", prestige:77, placements:86, research:72, campus:90 },
+  { name:"Manipal University Jaipur", city:"Jaipur",       state:"Rajasthan",      type:"Private Deemed Univ.",  exams:["MET","JEE Main"], rankRange:[1,300000],       fees:4.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:52, nirfCat:"Engg #52", prestige:68, placements:82, research:68, campus:84 },
+
+  // ═══════════════════════════════════════════════
+  // COMEDK / KCET — Karnataka Private
+  // ═══════════════════════════════════════════════
+  { name:"RV College of Engineering",         city:"Bangalore",   state:"Karnataka", type:"Private (Autonomous)", exams:["KCET","COMEDK","JEE Main"], rankRange:[1,80000],  fees:2.0, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:54, nirfCat:"Engg #54", prestige:70, placements:83, research:70, campus:80 },
+  { name:"PES University",                    city:"Bangalore",   state:"Karnataka", type:"Private Deemed Univ.",  exams:["KCET","COMEDK","JEE Main"], rankRange:[1,120000], fees:4.0, streams:["Computer Science Engineering","Electronics Engineering"],                          nirfRank:56, nirfCat:"Engg #56", prestige:69, placements:85, research:68, campus:82 },
+  { name:"BMS College of Engineering",        city:"Bangalore",   state:"Karnataka", type:"Private (Autonomous)", exams:["KCET","COMEDK","JEE Main"], rankRange:[1,15000],  fees:1.8, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:57, nirfCat:"Engg #57", prestige:69, placements:84, research:68, campus:80 },
+  { name:"MS Ramaiah Institute of Technology",city:"Bangalore",   state:"Karnataka", type:"Private (Autonomous)", exams:["KCET","COMEDK","JEE Main"], rankRange:[1,20000],  fees:2.0, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:59, nirfCat:"Engg #59", prestige:68, placements:83, research:66, campus:81 },
+  { name:"Dayananda Sagar College of Engg.", city:"Bangalore",    state:"Karnataka", type:"Private",              exams:["KCET","COMEDK","JEE Main"], rankRange:[1,40000],  fees:1.6, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:68, nirfCat:"Engg #68", prestige:64, placements:80, research:62, campus:78 },
+  { name:"JSS Science & Technology University",city:"Mysore",     state:"Karnataka", type:"Private Deemed Univ.",  exams:["KCET","JEE Main"],         rankRange:[1,50000],  fees:1.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:62, nirfCat:"Engg #62", prestige:66, placements:81, research:65, campus:78 },
+  { name:"KLE Technological University",      city:"Hubli",       state:"Karnataka", type:"Private Deemed Univ.",  exams:["KCET","JEE Main"],         rankRange:[1,45000],  fees:1.3, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:64, nirfCat:"Engg #64", prestige:65, placements:79, research:63, campus:73 },
+  { name:"Siddaganga Institute of Technology",city:"Tumkur",      state:"Karnataka", type:"Private Aided",         exams:["KCET"],                    rankRange:[1,60000],  fees:0.9, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:72, nirfCat:"Engg #72", prestige:62, placements:78, research:60, campus:74 },
+  { name:"Christ University",                 city:"Bangalore",   state:"Karnataka", type:"Private Deemed Univ.",  exams:["KCET","COMEDK","JEE Main","CUET"], rankRange:[1,600000], fees:3.0, streams:["Computer Science Engineering","Arts & Humanities","Commerce (BCom)","Science (BSc)","MBA"], nirfRank:39, nirfCat:"Univ #39", prestige:72, placements:80, research:72, campus:85 },
+  { name:"Jain University",                   city:"Bangalore",   state:"Karnataka", type:"Private Deemed Univ.",  exams:["KCET","COMEDK","JEE Main","CUET"], rankRange:[1,700000], fees:3.5, streams:["Computer Science Engineering","Electronics Engineering","MBA","Arts & Humanities","Commerce (BCom)"], nirfRank:48, nirfCat:"Univ #48", prestige:68, placements:78, research:68, campus:80 },
+  { name:"Reva University",                   city:"Bangalore",   state:"Karnataka", type:"Private",               exams:["KCET","COMEDK","JEE Main"], rankRange:[1,100000], fees:2.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:80, nirfCat:"Engg #80", prestige:60, placements:76, research:60, campus:78 },
+
+  // ═══════════════════════════════════════════════
+  // MHT-CET Private — Maharashtra
+  // ═══════════════════════════════════════════════
+  { name:"PICT Pune",             city:"Pune",             state:"Maharashtra",     type:"Private (Autonomous)", exams:["MHT-CET","JEE Main"], rankRange:[1,80000],  fees:1.5, streams:["Computer Science Engineering","Electronics Engineering"],                          nirfRank:58, nirfCat:"Engg #58", prestige:68, placements:82, research:65, campus:76 },
+  { name:"Symbiosis Institute of Technology", city:"Pune", state:"Maharashtra",    type:"Private Deemed Univ.", exams:["MHT-CET","JEE Main"], rankRange:[1,150000], fees:4.0, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:65, nirfCat:"Engg #65", prestige:65, placements:81, research:66, campus:80 },
+  { name:"MIT College of Engineering Pune",   city:"Pune", state:"Maharashtra",    type:"Private (Autonomous)", exams:["MHT-CET","JEE Main"], rankRange:[1,120000], fees:2.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:63, nirfCat:"Engg #63", prestige:66, placements:80, research:64, campus:78 },
+  { name:"Walchand College of Engineering",   city:"Sangli",state:"Maharashtra",   type:"State Govt. (Autonomous)",exams:["MHT-CET","JEE Main"], rankRange:[1,90000], fees:0.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:55, nirfCat:"Engg #55", prestige:69, placements:78, research:68, campus:73 },
+  { name:"DY Patil College of Engineering",   city:"Pune", state:"Maharashtra",    type:"Private",              exams:["MHT-CET","JEE Main"], rankRange:[1,200000], fees:2.0, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:82, nirfCat:"Engg #82", prestige:60, placements:76, research:60, campus:72 },
+
+  // ═══════════════════════════════════════════════
+  // PAN-INDIA Private (JEE Main based)
+  // ═══════════════════════════════════════════════
+  { name:"Thapar Institute of Engineering",  city:"Patiala",     state:"Punjab / Haryana", type:"Private Deemed Univ.", exams:["JEE Main"], rankRange:[1,80000],  fees:5.0, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:27, nirfCat:"Engg #27", prestige:80, placements:85, research:78, campus:80 },
+  { name:"DA-IICT Gandhinagar",              city:"Gandhinagar", state:"Gujarat",           type:"Private Deemed Univ.", exams:["GUJCET","JEE Main"], rankRange:[1,60000], fees:4.0, streams:["Computer Science Engineering","Electronics Engineering"],                   nirfRank:33, nirfCat:"Engg #33", prestige:77, placements:88, research:78, campus:82 },
+  { name:"Nirma University",                 city:"Ahmedabad",   state:"Gujarat",           type:"Private Deemed Univ.", exams:["GUJCET","JEE Main"], rankRange:[1,100000],fees:3.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:47, nirfCat:"Engg #47", prestige:72, placements:82, research:70, campus:78 },
+  { name:"PSG College of Technology",        city:"Coimbatore",  state:"Tamil Nadu",        type:"Private Aided",        exams:["TNEA","JEE Main"], rankRange:[1,100000], fees:1.0, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:44, nirfCat:"Engg #44", prestige:73, placements:82, research:70, campus:78 },
+  { name:"Thiagarajar College of Engineering",city:"Madurai",    state:"Tamil Nadu",        type:"Private Aided",        exams:["TNEA"],            rankRange:[1,80000],  fees:0.8, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:53, nirfCat:"Engg #53", prestige:70, placements:80, research:68, campus:76 },
+  { name:"Kumaraguru College of Technology", city:"Coimbatore",  state:"Tamil Nadu",        type:"Private",              exams:["TNEA","JEE Main"], rankRange:[1,300000], fees:0.9, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:72, nirfCat:"Engg #72", prestige:64, placements:75, research:60, campus:72 },
+  { name:"Chandigarh University",            city:"Mohali",      state:"Punjab / Haryana",  type:"Private Deemed Univ.", exams:["JEE Main","CUCET"], rankRange:[1,700000], fees:3.0, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering","MBA"], nirfRank:32, nirfCat:"Univ #32", prestige:73, placements:82, research:68, campus:86 },
+  { name:"Lovely Professional University",   city:"Phagwara",    state:"Punjab / Haryana",  type:"Private Deemed Univ.", exams:["JEE Main","LPUNEST"], rankRange:[1,800000],fees:2.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering","MBA","Arts & Humanities"], nirfRank:50, nirfCat:"Univ #50", prestige:67, placements:80, research:66, campus:88 },
+  { name:"Bennett University",               city:"Greater Noida",state:"Uttar Pradesh",    type:"Private",              exams:["JEE Main","CUET"],  rankRange:[1,400000], fees:5.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:60, nirfCat:"Engg #60", prestige:67, placements:82, research:68, campus:80 },
+  { name:"Shiv Nadar University",            city:"Greater Noida",state:"Uttar Pradesh",    type:"Private Deemed Univ.", exams:["JEE Main","CUET","SAT"], rankRange:[1,400000], fees:6.0, streams:["Computer Science Engineering","Electronics Engineering","Arts & Humanities","Science (BSc)"], nirfRank:19, nirfCat:"Univ #19", prestige:80, placements:84, research:82, campus:86 },
+  { name:"Ashoka University",                city:"Sonipat",     state:"Punjab / Haryana",  type:"Private",              exams:["CUET","Direct"],    rankRange:[1,600000], fees:8.5, streams:["Arts & Humanities","Science (BSc)","Commerce (BCom)"],                           nirfRank:22, nirfCat:"Univ #22", prestige:79, placements:84, research:82, campus:90 },
+  { name:"OP Jindal Global University",      city:"Sonipat",     state:"Punjab / Haryana",  type:"Private",              exams:["CUET","LSAT","CAT"], rankRange:[1,600000], fees:7.0, streams:["Arts & Humanities","Law (LLB)","MBA","Commerce (BCom)"],                       nirfRank:26, nirfCat:"Univ #26", prestige:77, placements:85, research:80, campus:88 },
+  { name:"Amity University Noida",           city:"Noida",       state:"Delhi / NCR",       type:"Private Deemed Univ.", exams:["JEE Main","CUET"],  rankRange:[1,500000], fees:5.0, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Arts & Humanities","Commerce (BCom)"], nirfRank:55, nirfCat:"Univ #55", prestige:67, placements:78, research:65, campus:82 },
+  { name:"Galgotias University",             city:"Greater Noida",state:"Uttar Pradesh",    type:"Private",              exams:["JEE Main","UPSEE"], rankRange:[1,700000], fees:2.0, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:88, nirfCat:"Engg #88", prestige:58, placements:74, research:58, campus:74 },
+  { name:"Graphic Era University",           city:"Dehradun",    state:"Uttarakhand",       type:"Private Deemed Univ.", exams:["JEE Main"],         rankRange:[1,500000], fees:2.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:70, nirfCat:"Engg #70", prestige:63, placements:75, research:62, campus:74 },
+  { name:"Nitte University Mangalore",        city:"Mangalore",  state:"Karnataka",          type:"Private Deemed Univ.", exams:["KCET","COMEDK","JEE Main","NEET"], rankRange:[1,400000], fees:3.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Medicine (MBBS)"], nirfRank:61, nirfCat:"Engg #61", prestige:66, placements:76, research:66, campus:74 },
+  { name:"Ramaiah University of Applied Sciences", city:"Bangalore", state:"Karnataka",     type:"Private Deemed Univ.", exams:["KCET","COMEDK","JEE Main","NEET"], rankRange:[1,500000], fees:4.0, streams:["Computer Science Engineering","Electronics Engineering","Medicine (MBBS)","Mechanical Engineering"], nirfRank:65, nirfCat:"Engg #65", prestige:64, placements:77, research:65, campus:76 },
+  { name:"Vasavi College of Engineering",    city:"Hyderabad",   state:"Telangana / AP",    type:"Private Aided",        exams:["EMCET"], rankRange:[1,10000], fees:0.6, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:55, nirfCat:"Engg #55", prestige:69, placements:81, research:66, campus:75 },
+  { name:"CBIT Hyderabad",                   city:"Hyderabad",   state:"Telangana / AP",    type:"Private",              exams:["EMCET"], rankRange:[1,15000], fees:0.8, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering","Civil Engineering"], nirfRank:62, nirfCat:"Engg #62", prestige:66, placements:79, research:63, campus:73 },
+  { name:"CVR College of Engineering",       city:"Hyderabad",   state:"Telangana / AP",    type:"Private",              exams:["EMCET","JEE Main"], rankRange:[1,20000], fees:0.9, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:68, nirfCat:"Engg #68", prestige:64, placements:78, research:64, campus:74 },
+  { name:"MGIT Hyderabad",                   city:"Hyderabad",   state:"Telangana / AP",    type:"Private",              exams:["EMCET"], rankRange:[1,25000], fees:0.85,streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],              nirfRank:72, nirfCat:"Engg #72", prestige:62, placements:77, research:62, campus:72 },
+  { name:"GRIET Hyderabad",                  city:"Hyderabad",   state:"Telangana / AP",    type:"Private",              exams:["EMCET"], rankRange:[1,30000], fees:0.9, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"],              nirfRank:75, nirfCat:"Engg #75", prestige:61, placements:76, research:61, campus:71 },
+  { name:"KL University Vijayawada",          city:"Vijayawada", state:"Telangana / AP",    type:"Private Deemed Univ.", exams:["EAPCET","JEE Main"], rankRange:[1,60000], fees:2.0, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:48, nirfCat:"Engg #48", prestige:70, placements:83, research:67, campus:78 },
+  { name:"GITAM University",                  city:"Visakhapatnam",state:"Telangana / AP",  type:"Private Deemed Univ.", exams:["EAPCET","JEE Main"], rankRange:[1,50000], fees:2.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:45, nirfCat:"Univ #45", prestige:71, placements:82, research:68, campus:80 },
+  { name:"Vignan's University Guntur",        city:"Guntur",     state:"Telangana / AP",    type:"Private Deemed Univ.", exams:["EAPCET","JEE Main"], rankRange:[1,40000], fees:1.8, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:52, nirfCat:"Engg #52", prestige:68, placements:79, research:65, campus:76 },
+  { name:"Heritage Institute of Technology", city:"Kolkata",     state:"West Bengal",       type:"Private",              exams:["WBJEE","JEE Main"], rankRange:[1,80000],  fees:1.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:72, nirfCat:"Engg #72", prestige:62, placements:78, research:65, campus:72 },
+  { name:"IEM Kolkata",                      city:"Kolkata",     state:"West Bengal",       type:"Private",              exams:["WBJEE","JEE Main"], rankRange:[1,60000],  fees:1.8, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:68, nirfCat:"Engg #68", prestige:63, placements:79, research:63, campus:73 },
+  { name:"Model Engineering College Thrissur",city:"Thrissur",   state:"Kerala",            type:"State Govt.",          exams:["KEAM"],             rankRange:[1,30000],  fees:0.3, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:55, nirfCat:"Engg #55", prestige:68, placements:80, research:70, campus:72 },
+  { name:"Rajagiri School of Engineering",   city:"Kochi",       state:"Kerala",            type:"Private",              exams:["KEAM","JEE Main"],  rankRange:[1,100000], fees:1.0, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:74, nirfCat:"Engg #74", prestige:62, placements:76, research:62, campus:73 },
+
+  // ═══════════════════════════════════════════════
+  // NEET — Medical  (NIRF: Medical list)
+  // ═══════════════════════════════════════════════
+  { name:"AIIMS New Delhi",          city:"New Delhi",      state:"Delhi / NCR",    type:"Central Govt. (AIIMS)", exams:["NEET"], rankRange:[1,100],   fees:0.1,  streams:["Medicine (MBBS)"], nirfRank:1,  nirfCat:"Medical #1",  prestige:100, placements:99, research:99, campus:92 },
+  { name:"JIPMER Puducherry",        city:"Puducherry",     state:"Tamil Nadu",     type:"Central Govt.",         exams:["NEET"], rankRange:[1,500],   fees:0.05, streams:["Medicine (MBBS)"], nirfRank:2,  nirfCat:"Medical #2",  prestige:97,  placements:98, research:96, campus:85 },
+  { name:"CMC Vellore",              city:"Vellore",        state:"Tamil Nadu",     type:"Private Deemed Univ.",  exams:["NEET"], rankRange:[1,2000],  fees:1.5,  streams:["Medicine (MBBS)"], nirfRank:3,  nirfCat:"Medical #3",  prestige:96,  placements:95, research:93, campus:82 },
+  { name:"Maulana Azad Medical College Delhi", city:"New Delhi", state:"Delhi / NCR",type:"State Govt.",         exams:["NEET"], rankRange:[1,400],   fees:0.05, streams:["Medicine (MBBS)"], nirfRank:5,  nirfCat:"Medical #5",  prestige:95,  placements:96, research:90, campus:80 },
+  { name:"Madras Medical College",   city:"Chennai",        state:"Tamil Nadu",     type:"State Govt.",           exams:["NEET"], rankRange:[1,1500],  fees:0.02, streams:["Medicine (MBBS)"], nirfRank:4,  nirfCat:"Medical #4",  prestige:95,  placements:94, research:88, campus:77 },
+  { name:"AIIMS Jodhpur",            city:"Jodhpur",        state:"Rajasthan",      type:"Central Govt. (AIIMS)", exams:["NEET"], rankRange:[1,300],   fees:0.1,  streams:["Medicine (MBBS)"], nirfRank:6,  nirfCat:"Medical #6",  prestige:94,  placements:97, research:95, campus:88 },
+  { name:"AIIMS Bhopal",             city:"Bhopal",         state:"Madhya Pradesh", type:"Central Govt. (AIIMS)", exams:["NEET"], rankRange:[1,400],   fees:0.1,  streams:["Medicine (MBBS)"], nirfRank:7,  nirfCat:"Medical #7",  prestige:93,  placements:96, research:94, campus:87 },
+  { name:"AIIMS Hyderabad",          city:"Hyderabad",      state:"Telangana / AP", type:"Central Govt. (AIIMS)", exams:["NEET"], rankRange:[1,500],   fees:0.1,  streams:["Medicine (MBBS)"], nirfRank:10, nirfCat:"Medical #10", prestige:91,  placements:97, research:95, campus:88 },
+  { name:"Grant Medical College Mumbai", city:"Mumbai",     state:"Maharashtra",    type:"State Govt.",           exams:["NEET"], rankRange:[1,2000],  fees:0.05, streams:["Medicine (MBBS)"], nirfRank:8,  nirfCat:"Medical #8",  prestige:92,  placements:94, research:88, campus:78 },
+  { name:"JNMC Aligarh (AMU)",       city:"Aligarh",        state:"Uttar Pradesh",  type:"Central Govt.",         exams:["NEET"], rankRange:[1,3000],  fees:0.1,  streams:["Medicine (MBBS)"], nirfRank:11, nirfCat:"Medical #11", prestige:89,  placements:93, research:88, campus:79 },
+  { name:"PSG Institute of Medical Sciences", city:"Coimbatore", state:"Tamil Nadu", type:"Private",             exams:["NEET"], rankRange:[1,20000], fees:5.0,  streams:["Medicine (MBBS)"], nirfRank:12, nirfCat:"Medical #12", prestige:88,  placements:89, research:79, campus:77 },
+  { name:"Kasturba Medical College Manipal",  city:"Manipal",    state:"Karnataka",  type:"Private Deemed Univ.", exams:["NEET"], rankRange:[1,10000], fees:15.0, streams:["Medicine (MBBS)"], nirfRank:13, nirfCat:"Medical #13", prestige:87,  placements:92, research:85, campus:88 },
+  { name:"MS Ramaiah Medical College",        city:"Bangalore",  state:"Karnataka",  type:"Private",              exams:["NEET"], rankRange:[1,15000], fees:10.0, streams:["Medicine (MBBS)"], nirfRank:15, nirfCat:"Medical #15", prestige:85,  placements:90, research:82, campus:80 },
+  { name:"JSS Medical College Mysore",        city:"Mysore",     state:"Karnataka",  type:"Private Deemed Univ.", exams:["NEET"], rankRange:[1,25000], fees:8.0,  streams:["Medicine (MBBS)"], nirfRank:18, nirfCat:"Medical #18", prestige:83,  placements:88, research:80, campus:79 },
+  { name:"Sri Ramachandra Medical College",   city:"Chennai",    state:"Tamil Nadu", type:"Private Deemed Univ.", exams:["NEET"], rankRange:[1,15000], fees:12.0, streams:["Medicine (MBBS)"], nirfRank:14, nirfCat:"Medical #14", prestige:86,  placements:91, research:83, campus:84 },
+  { name:"SRM Medical College Chennai",       city:"Chennai",    state:"Tamil Nadu", type:"Private",              exams:["NEET"], rankRange:[1,30000], fees:8.0,  streams:["Medicine (MBBS)"], nirfRank:22, nirfCat:"Medical #22", prestige:81,  placements:87, research:76, campus:78 },
+  { name:"DY Patil Medical College Pune",     city:"Pune",       state:"Maharashtra",type:"Private Deemed Univ.", exams:["NEET"], rankRange:[1,50000], fees:12.0, streams:["Medicine (MBBS)"], nirfRank:24, nirfCat:"Medical #24", prestige:80,  placements:85, research:76, campus:78 },
+  { name:"MGM Medical College Navi Mumbai",   city:"Navi Mumbai",state:"Maharashtra",type:"Private",              exams:["NEET"], rankRange:[1,35000], fees:6.5,  streams:["Medicine (MBBS)"], nirfRank:26, nirfCat:"Medical #26", prestige:79,  placements:84, research:74, campus:75 },
+  { name:"Father Muller Medical College",     city:"Mangalore",  state:"Karnataka",  type:"Private",              exams:["NEET"], rankRange:[1,40000], fees:5.0,  streams:["Medicine (MBBS)"], nirfRank:28, nirfCat:"Medical #28", prestige:78,  placements:86, research:76, campus:78 },
+  { name:"Saveetha Medical College Chennai",  city:"Chennai",    state:"Tamil Nadu", type:"Private Deemed Univ.", exams:["NEET"], rankRange:[1,50000], fees:10.0, streams:["Medicine (MBBS)"], nirfRank:20, nirfCat:"Medical #20", prestige:82,  placements:86, research:78, campus:82 },
+
+  // ═══════════════════════════════════════════════
+  // CLAT / AILET / LSAT — Law  (NIRF: Law list)
+  // ═══════════════════════════════════════════════
+  { name:"NLSIU Bangalore",           city:"Bangalore",    state:"Karnataka",       type:"National Law University", exams:["CLAT"],        rankRange:[1,100],   fees:2.5, streams:["Law (LLB)"], nirfRank:1,  nirfCat:"Law #1",  prestige:98, placements:95, research:90, campus:85 },
+  { name:"NALSAR Hyderabad",          city:"Hyderabad",    state:"Telangana / AP",  type:"National Law University", exams:["CLAT"],        rankRange:[1,300],   fees:2.0, streams:["Law (LLB)"], nirfRank:2,  nirfCat:"Law #2",  prestige:96, placements:92, research:88, campus:82 },
+  { name:"WBNUJS Kolkata",            city:"Kolkata",      state:"West Bengal",     type:"National Law University", exams:["CLAT"],        rankRange:[1,400],   fees:2.0, streams:["Law (LLB)"], nirfRank:3,  nirfCat:"Law #3",  prestige:94, placements:91, research:86, campus:80 },
+  { name:"NLU Delhi (AILET)",         city:"New Delhi",    state:"Delhi / NCR",     type:"National Law University", exams:["AILET","CLAT"],rankRange:[1,200],   fees:2.2, streams:["Law (LLB)"], nirfRank:4,  nirfCat:"Law #4",  prestige:95, placements:93, research:87, campus:83 },
+  { name:"NLU Jodhpur",               city:"Jodhpur",      state:"Rajasthan",       type:"National Law University", exams:["CLAT"],        rankRange:[1,600],   fees:1.8, streams:["Law (LLB)"], nirfRank:5,  nirfCat:"Law #5",  prestige:91, placements:88, research:82, campus:78 },
+  { name:"GNLU Gandhinagar",          city:"Gandhinagar",  state:"Gujarat",         type:"National Law University", exams:["CLAT"],        rankRange:[1,800],   fees:1.8, streams:["Law (LLB)"], nirfRank:6,  nirfCat:"Law #6",  prestige:89, placements:86, research:80, campus:80 },
+  { name:"RMLNLU Lucknow",            city:"Lucknow",      state:"Uttar Pradesh",   type:"National Law University", exams:["CLAT"],        rankRange:[1,1200],  fees:1.5, streams:["Law (LLB)"], nirfRank:8,  nirfCat:"Law #8",  prestige:86, placements:84, research:78, campus:76 },
+  { name:"Jindal Global Law School",  city:"Sonipat",      state:"Punjab / Haryana",type:"Private Deemed Univ.",    exams:["CLAT","LSAT"],  rankRange:[1,10000], fees:8.0, streams:["Law (LLB)"], nirfRank:10, nirfCat:"Law #10", prestige:84, placements:85, research:80, campus:88 },
+  { name:"Symbiosis Law School Pune", city:"Pune",         state:"Maharashtra",     type:"Private Deemed Univ.",    exams:["CLAT","LSAT"],  rankRange:[1,5000],  fees:4.0, streams:["Law (LLB)"], nirfRank:9,  nirfCat:"Law #9",  prestige:85, placements:83, research:75, campus:82 },
+  { name:"Christ University Law School",city:"Bangalore",  state:"Karnataka",       type:"Private Deemed Univ.",    exams:["CLAT","LSAT","CUET"], rankRange:[1,15000], fees:3.0, streams:["Law (LLB)"], nirfRank:13, nirfCat:"Law #13", prestige:80, placements:80, research:70, campus:82 },
+  { name:"Amity Law School Noida",    city:"Noida",        state:"Delhi / NCR",     type:"Private Deemed Univ.",    exams:["CLAT","LSAT","CUET"], rankRange:[1,20000], fees:3.5, streams:["Law (LLB)"], nirfRank:15, nirfCat:"Law #15", prestige:78, placements:80, research:68, campus:78 },
+  { name:"Nirma University Law",      city:"Ahmedabad",    state:"Gujarat",         type:"Private Deemed Univ.",    exams:["CLAT","LSAT"],  rankRange:[1,12000], fees:3.5, streams:["Law (LLB)"], nirfRank:12, nirfCat:"Law #12", prestige:81, placements:81, research:70, campus:78 },
+
+  // ═══════════════════════════════════════════════
+  // CAT / XAT / SNAP / NMAT / MAT / CMAT — MBA  (NIRF: Management list)
+  // ═══════════════════════════════════════════════
+  { name:"IIM Ahmedabad",            city:"Ahmedabad",    state:"Gujarat",          type:"IIM (Central Govt.)",    exams:["CAT"],           rankRange:[99,100], fees:25.0, streams:["MBA"], nirfRank:1,  nirfCat:"Mgmt #1",  prestige:100, placements:99, research:95, campus:92 },
+  { name:"IIM Bangalore",            city:"Bangalore",    state:"Karnataka",        type:"IIM (Central Govt.)",    exams:["CAT"],           rankRange:[99,100], fees:24.0, streams:["MBA"], nirfRank:2,  nirfCat:"Mgmt #2",  prestige:99,  placements:99, research:95, campus:93 },
+  { name:"IIM Calcutta",             city:"Kolkata",      state:"West Bengal",      type:"IIM (Central Govt.)",    exams:["CAT"],           rankRange:[98,100], fees:23.0, streams:["MBA"], nirfRank:3,  nirfCat:"Mgmt #3",  prestige:98,  placements:98, research:93, campus:90 },
+  { name:"IIM Lucknow",              city:"Lucknow",      state:"Uttar Pradesh",    type:"IIM (Central Govt.)",    exams:["CAT"],           rankRange:[97,100], fees:20.0, streams:["MBA"], nirfRank:4,  nirfCat:"Mgmt #4",  prestige:96,  placements:97, research:91, campus:88 },
+  { name:"IIM Kozhikode",            city:"Kozhikode",    state:"Kerala",           type:"IIM (Central Govt.)",    exams:["CAT"],           rankRange:[96,100], fees:19.0, streams:["MBA"], nirfRank:5,  nirfCat:"Mgmt #5",  prestige:95,  placements:96, research:89, campus:87 },
+  { name:"IIM Indore",               city:"Indore",       state:"Madhya Pradesh",   type:"IIM (Central Govt.)",    exams:["CAT"],           rankRange:[96,100], fees:18.0, streams:["MBA"], nirfRank:6,  nirfCat:"Mgmt #6",  prestige:94,  placements:95, research:88, campus:86 },
+  { name:"FMS Delhi",                city:"New Delhi",    state:"Delhi / NCR",      type:"Central Govt. University",exams:["CAT"],           rankRange:[98,100], fees:2.0,  streams:["MBA"], nirfRank:7,  nirfCat:"Mgmt #7",  prestige:95,  placements:97, research:88, campus:83 },
+  { name:"XLRI Jamshedpur",          city:"Jamshedpur",   state:"Jharkhand",        type:"Private (Autonomous)",   exams:["XAT","CAT"],     rankRange:[95,100], fees:20.0, streams:["MBA"], nirfRank:8,  nirfCat:"Mgmt #8",  prestige:93,  placements:95, research:86, campus:84 },
+  { name:"SPJIMR Mumbai",            city:"Mumbai",       state:"Maharashtra",      type:"Private (Autonomous)",   exams:["CAT","XAT"],     rankRange:[95,100], fees:18.0, streams:["MBA"], nirfRank:9,  nirfCat:"Mgmt #9",  prestige:92,  placements:96, research:87, campus:85 },
+  { name:"MDI Gurgaon",              city:"Gurgaon",      state:"Delhi / NCR",      type:"Private (Autonomous)",   exams:["CAT"],           rankRange:[94,100], fees:21.0, streams:["MBA"], nirfRank:10, nirfCat:"Mgmt #10", prestige:91,  placements:94, research:85, campus:83 },
+  { name:"IIM Shillong",             city:"Shillong",     state:"Assam",            type:"IIM (Central Govt.)",    exams:["CAT"],           rankRange:[94,100], fees:14.0, streams:["MBA"], nirfRank:11, nirfCat:"Mgmt #11", prestige:90,  placements:92, research:86, campus:80 },
+  { name:"IIFT Delhi",               city:"New Delhi",    state:"Delhi / NCR",      type:"Central Govt.",          exams:["CAT"],           rankRange:[95,100], fees:16.0, streams:["MBA"], nirfRank:12, nirfCat:"Mgmt #12", prestige:90,  placements:94, research:84, campus:82 },
+  { name:"NMIMS Mumbai",             city:"Mumbai",       state:"Maharashtra",      type:"Private Deemed Univ.",   exams:["NMAT","CAT"],    rankRange:[93,100], fees:17.0, streams:["MBA"], nirfRank:13, nirfCat:"Mgmt #13", prestige:88,  placements:91, research:80, campus:84 },
+  { name:"FORE School of Management",city:"New Delhi",    state:"Delhi / NCR",      type:"Private (Autonomous)",   exams:["CAT","XAT","MAT","CMAT"], rankRange:[80,100], fees:14.5, streams:["MBA"], nirfRank:18, nirfCat:"Mgmt #18", prestige:83,  placements:87, research:75, campus:80 },
+  { name:"KJ Somaiya Institute",     city:"Mumbai",       state:"Maharashtra",      type:"Private (Autonomous)",   exams:["CAT","XAT","MAT","CMAT","NMAT"], rankRange:[80,100], fees:10.0, streams:["MBA"], nirfRank:20, nirfCat:"Mgmt #20", prestige:82,  placements:86, research:74, campus:78 },
+  { name:"XIMB Bhubaneswar",         city:"Bhubaneswar",  state:"Odisha",           type:"Private (Autonomous)",   exams:["XAT","CAT"],     rankRange:[88,100], fees:16.0, streams:["MBA"], nirfRank:15, nirfCat:"Mgmt #15", prestige:86,  placements:90, research:80, campus:82 },
+  { name:"Symbiosis SCMHRD Pune",    city:"Pune",         state:"Maharashtra",      type:"Private Deemed Univ.",   exams:["SNAP"],          rankRange:[92,100], fees:15.0, streams:["MBA"], nirfRank:16, nirfCat:"Mgmt #16", prestige:86,  placements:91, research:80, campus:82 },
+  { name:"Symbiosis SIBM Pune",      city:"Pune",         state:"Maharashtra",      type:"Private Deemed Univ.",   exams:["SNAP"],          rankRange:[90,100], fees:14.0, streams:["MBA"], nirfRank:19, nirfCat:"Mgmt #19", prestige:84,  placements:88, research:78, campus:80 },
+  { name:"NMIMS Bengaluru",          city:"Bangalore",    state:"Karnataka",        type:"Private Deemed Univ.",   exams:["NMAT","CAT"],    rankRange:[85,100], fees:14.0, streams:["MBA"], nirfRank:22, nirfCat:"Mgmt #22", prestige:82,  placements:87, research:75, campus:80 },
+  { name:"IMT Ghaziabad",            city:"Ghaziabad",    state:"Uttar Pradesh",    type:"Private (Autonomous)",   exams:["CAT","XAT","CMAT"], rankRange:[80,100], fees:15.0, streams:["MBA"], nirfRank:24, nirfCat:"Mgmt #24", prestige:80,  placements:85, research:73, campus:76 },
+  { name:"ICFAI Business School Hyderabad", city:"Hyderabad", state:"Telangana / AP", type:"Private Deemed Univ.", exams:["CAT","MAT","CMAT","IBSAT"], rankRange:[60,100], fees:7.5, streams:["MBA"], nirfRank:35, nirfCat:"Mgmt #35", prestige:72,  placements:80, research:65, campus:76 },
+  { name:"Christ Institute of Management",city:"Bangalore",state:"Karnataka",       type:"Private Deemed Univ.",   exams:["CAT","MAT","CMAT","XAT"], rankRange:[70,100], fees:6.0, streams:["MBA"], nirfRank:30, nirfCat:"Mgmt #30", prestige:75,  placements:81, research:68, campus:84 },
+  { name:"Amity Business School",    city:"Noida",        state:"Delhi / NCR",      type:"Private Deemed Univ.",   exams:["CAT","MAT","CMAT","XAT"], rankRange:[65,100], fees:8.0, streams:["MBA"], nirfRank:38, nirfCat:"Mgmt #38", prestige:70,  placements:80, research:66, campus:78 },
+  { name:"BIMTECH Greater Noida",    city:"Greater Noida",state:"Uttar Pradesh",    type:"Private (Autonomous)",   exams:["CAT","XAT","MAT","CMAT"], rankRange:[75,100], fees:8.0, streams:["MBA"], nirfRank:32, nirfCat:"Mgmt #32", prestige:73,  placements:82, research:68, campus:74 },
+  { name:"Great Lakes Chennai",      city:"Chennai",      state:"Tamil Nadu",       type:"Private",                exams:["CAT","XAT","MAT","CMAT"], rankRange:[85,100], fees:12.0, streams:["MBA"], nirfRank:25, nirfCat:"Mgmt #25", prestige:79,  placements:87, research:76, campus:79 },
+  { name:"PSG Institute of Management", city:"Coimbatore",state:"Tamil Nadu",       type:"Private",                exams:["CAT","MAT","CMAT"],       rankRange:[65,100], fees:3.5,  streams:["MBA"], nirfRank:36, nirfCat:"Mgmt #36", prestige:71,  placements:82, research:68, campus:76 },
+
+  // ═══════════════════════════════════════════════
+  // GATE — M.Tech / PG
+  // ═══════════════════════════════════════════════
+  { name:"IISc Bangalore (M.Tech/PhD)", city:"Bangalore",  state:"Karnataka",      type:"Central Research Inst.", exams:["GATE"], rankRange:[1,200],  fees:1.0, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:1, nirfCat:"Univ #1",  prestige:100, placements:96, research:100, campus:94 },
+  { name:"IIT Bombay (M.Tech)",       city:"Mumbai",       state:"Maharashtra",    type:"IIT (Central Govt.)",    exams:["GATE"], rankRange:[1,200],  fees:1.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:3, nirfCat:"Engg #3",  prestige:98, placements:97, research:99, campus:95 },
+  { name:"IIT Delhi (M.Tech)",        city:"New Delhi",    state:"Delhi / NCR",    type:"IIT (Central Govt.)",    exams:["GATE"], rankRange:[1,250],  fees:1.5, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:2, nirfCat:"Engg #2",  prestige:97, placements:97, research:98, campus:93 },
+  { name:"NIT Trichy (M.Tech)",       city:"Tiruchirappalli",state:"Tamil Nadu",   type:"NIT (Central Govt.)",    exams:["GATE"], rankRange:[1,800],  fees:0.6, streams:["Computer Science Engineering","Electronics Engineering","Mechanical Engineering"], nirfRank:9, nirfCat:"Engg #9",  prestige:88, placements:88, research:84, campus:82 },
+  { name:"IIIT Bangalore (M.Tech)",   city:"Bangalore",    state:"Karnataka",      type:"IIIT (Private)",         exams:["GATE"], rankRange:[1,500],  fees:3.0, streams:["Computer Science Engineering","Electronics Engineering"],                          nirfRank:22,nirfCat:"Engg #22", prestige:83, placements:92, research:88, campus:82 },
+
+  // ═══════════════════════════════════════════════
+  // CUET — Central Universities & Liberal Arts
+  // ═══════════════════════════════════════════════
+  { name:"Delhi University (DU)",     city:"New Delhi",    state:"Delhi / NCR",    type:"Central Govt. University",exams:["CUET"], rankRange:[1,500000], fees:0.2, streams:["Arts & Humanities","Science (BSc)","Commerce (BCom)"],                           nirfRank:11, nirfCat:"Univ #11", prestige:82, placements:82, research:80, campus:85 },
+  { name:"JNU Delhi",                 city:"New Delhi",    state:"Delhi / NCR",    type:"Central Govt. University",exams:["CUET"], rankRange:[1,500000], fees:0.05,streams:["Arts & Humanities","Science (BSc)"],                                              nirfRank:2,  nirfCat:"Univ #2",  prestige:88, placements:78, research:92, campus:80 },
+  { name:"BHU Varanasi",              city:"Varanasi",     state:"Uttar Pradesh",  type:"Central Govt. University",exams:["CUET"], rankRange:[1,600000], fees:0.15,streams:["Arts & Humanities","Science (BSc)","Commerce (BCom)","Computer Science Engineering"], nirfRank:9, nirfCat:"Univ #9",  prestige:83, placements:80, research:82, campus:84 },
+  { name:"Hyderabad University (UoH)",city:"Hyderabad",    state:"Telangana / AP", type:"Central Govt. University",exams:["CUET"], rankRange:[1,400000], fees:0.1, streams:["Arts & Humanities","Science (BSc)"],                                              nirfRank:6,  nirfCat:"Univ #6",  prestige:85, placements:76, research:88, campus:78 },
+  { name:"Jamia Millia Islamia Delhi",city:"New Delhi",    state:"Delhi / NCR",    type:"Central Govt. University",exams:["CUET","JEE Main"], rankRange:[1,500000], fees:0.15,streams:["Computer Science Engineering","Electronics Engineering","Arts & Humanities"], nirfRank:12, nirfCat:"Univ #12", prestige:81, placements:78, research:80, campus:78 },
+  { name:"Aligarh Muslim University (AMU)", city:"Aligarh",state:"Uttar Pradesh", type:"Central Govt. University",exams:["CUET"], rankRange:[1,500000], fees:0.2, streams:["Computer Science Engineering","Arts & Humanities","Science (BSc)","Medicine (MBBS)"], nirfRank:8, nirfCat:"Univ #8",  prestige:83, placements:79, research:82, campus:82 },
+  { name:"Miranda House Delhi",       city:"New Delhi",    state:"Delhi / NCR",    type:"Govt. College (DU)",      exams:["CUET"], rankRange:[1,400000], fees:0.2, streams:["Arts & Humanities","Science (BSc)"],                                              nirfRank:1,  nirfCat:"College #1",prestige:85, placements:78, research:80, campus:80 },
+  { name:"Lady Shri Ram College Delhi",city:"New Delhi",   state:"Delhi / NCR",   type:"Govt. College (DU)",      exams:["CUET"], rankRange:[1,400000], fees:0.2, streams:["Arts & Humanities","Commerce (BCom)","Science (BSc)"],                            nirfRank:2,  nirfCat:"College #2",prestige:84, placements:80, research:78, campus:82 },
+  { name:"Hindu College Delhi",       city:"New Delhi",    state:"Delhi / NCR",    type:"Govt. College (DU)",      exams:["CUET"], rankRange:[1,450000], fees:0.2, streams:["Arts & Humanities","Science (BSc)","Commerce (BCom)"],                            nirfRank:3,  nirfCat:"College #3",prestige:83, placements:79, research:79, campus:81 },
+  { name:"Stephens College Delhi",    city:"New Delhi",    state:"Delhi / NCR",    type:"Private Aided (DU)",      exams:["CUET"], rankRange:[1,300000], fees:0.25,streams:["Arts & Humanities","Science (BSc)","Commerce (BCom)"],                            nirfRank:5,  nirfCat:"College #5",prestige:82, placements:80, research:80, campus:82 },
+  { name:"Loyola College Chennai",    city:"Chennai",      state:"Tamil Nadu",     type:"Private Autonomous",      exams:["TNEA","CUET","Direct"], rankRange:[1,500000], fees:0.5, streams:["Arts & Humanities","Science (BSc)","Commerce (BCom)"],            nirfRank:6,  nirfCat:"College #6",prestige:80, placements:76, research:74, campus:80 },
+  { name:"St. Xavier's College Mumbai",city:"Mumbai",      state:"Maharashtra",    type:"Private Autonomous",      exams:["MHT-CET","CUET","Direct"], rankRange:[1,500000], fees:0.3, streams:["Science (BSc)","Arts & Humanities","Commerce (BCom)"],         nirfRank:8,  nirfCat:"College #8",prestige:79, placements:78, research:78, campus:82 },
+  { name:"Fergusson College Pune",    city:"Pune",         state:"Maharashtra",    type:"Private Autonomous",      exams:["MHT-CET","CUET","Direct"], rankRange:[1,500000], fees:0.3, streams:["Arts & Humanities","Science (BSc)","Commerce (BCom)"],         nirfRank:11, nirfCat:"College #11",prestige:77,placements:74, research:72, campus:76 },
+  { name:"St. Joseph's College Bengaluru",city:"Bangalore",state:"Karnataka",     type:"Private Autonomous",      exams:["KCET","CUET","Direct"],    rankRange:[1,500000], fees:0.4, streams:["Arts & Humanities","Science (BSc)","Commerce (BCom)"],         nirfRank:12, nirfCat:"College #12",prestige:76,placements:74, research:72, campus:80 },
+  { name:"Ashoka University",         city:"Sonipat",      state:"Punjab / Haryana",type:"Private",               exams:["CUET","Direct"],           rankRange:[1,600000], fees:8.5, streams:["Arts & Humanities","Science (BSc)","Commerce (BCom)"],         nirfRank:22, nirfCat:"Univ #22", prestige:79, placements:84, research:82, campus:90 },
+  { name:"FLAME University Pune",     city:"Pune",         state:"Maharashtra",    type:"Private",                 exams:["CUET","Direct"],           rankRange:[1,500000], fees:7.5, streams:["Arts & Humanities","Science (BSc)","Commerce (BCom)"],         nirfRank:40, nirfCat:"Univ #40", prestige:74, placements:80, research:76, campus:88 },
+  { name:"KREA University",           city:"Sricity",      state:"Telangana / AP", type:"Private",                 exams:["CUET","Direct"],           rankRange:[1,500000], fees:6.5, streams:["Arts & Humanities","Science (BSc)","Commerce (BCom)"],         nirfRank:45, nirfCat:"Univ #45", prestige:72, placements:78, research:76, campus:84 },
+];
+
+
+
+
+// ── Rank filter ────────────────────────────────────────────────
+function parseRank(rankStr, exam) {
+  const s = rankStr.trim().toLowerCase();
+  if (s.includes('percentile') || s.includes('%')) {
+    const p = parseFloat(s);
+    if (exam === 'CAT' || exam === 'XAT' || exam === 'SNAP' || exam === 'NMAT' || exam === 'MAT' || exam === 'CMAT') return p;
+    const totalStudents = {
+      'JEE Main': 1000000, 'JEE Advanced': 180000,
+      'NEET': 1800000, 'CUET': 1200000,
+      'EMCET': 400000, 'EAPCET': 300000,
+      'KCET': 200000, 'MHT-CET': 500000,
+      'WBJEE': 100000, 'TNEA': 200000,
+      'GUJCET': 150000, 'KEAM': 100000,
+      'REAP': 80000, 'MPDT': 120000, 'UPSEE': 300000,
+      'GATE': 200000, 'CLAT': 60000, 'AILET': 30000,
+      'BITSAT': 300000, 'VITEEE': 250000,
+      'SRMJEEE': 200000, 'MET': 100000, 'COMEDK': 80000, 'LSAT': 50000
+    }[exam] || 500000;
+    return Math.round(totalStudents * (1 - p / 100));
+  }
+  return parseFloat(s.replace(/[^0-9.]/g, '')) || 50000;
+}
+
+function collegeMatchesStudent(college, exam, rank, budgetLakhs, locations, stream, category) {
+  // Exam match
+  if (!college.exams.includes(exam)) return false;
+
+  // Stream match
+  if (stream && stream !== '' && !college.streams.includes(stream)) return false;
+
+  // Budget match (with 20% buffer)
+  if (college.fees > budgetLakhs * 1.2) return false;
+
+  // Location match
+  const anyIndia = locations.includes('Anywhere in India') || locations.length === 0;
+  if (!anyIndia && !locations.some(loc => college.state.includes(loc) || loc.includes(college.state))) return false;
+
+  // Rank match
+  let adjustedRank = rank;
+  const categoryBonus = { 'SC': 0.5, 'ST': 0.4, 'OBC': 0.75, 'EWS': 0.85, 'General': 1.0 }[category] || 1.0;
+  const mbaExams = ['CAT','XAT','SNAP','NMAT','MAT','CMAT'];
+
+  if (mbaExams.includes(exam)) {
+    // rank is percentile for MBA exams
+    return rank >= college.rankRange[0] - 2;
+  }
+  adjustedRank = rank * categoryBonus;
+  return adjustedRank <= college.rankRange[1] * 1.3; // 30% buffer
+}
+
+function scoreCollege(college, exam, rank, budgetLakhs, locations, priorities, stream) {
+  let score = 0;
+
+  // Rank eligibility score (how comfortably eligible)
+  let rankScore = 0;
+  const mbaExamsScore = ['CAT','XAT','SNAP','NMAT','MAT','CMAT'];
+  if (mbaExamsScore.includes(exam)) {
+    rankScore = Math.min(100, (rank - college.rankRange[0] + 2) * 10);
+  } else {
+    const ratio = college.rankRange[1] / Math.max(rank, 1);
+    rankScore = Math.min(100, ratio * 40);
+  }
+
+  // Budget score
+  const budgetRatio = (budgetLakhs - college.fees) / budgetLakhs;
+  const budgetScore = Math.min(100, Math.max(0, budgetRatio * 100));
+
+  // NIRF score
+  const nirfScore = college.prestige || 70; // prestige is 0-100, category-agnostic quality score
+
+  // Priority-based scoring
+  let priorityScore = 70;
+  if (priorities.includes('Placement & Jobs')) priorityScore += college.placements * 0.3;
+  if (priorities.includes('Research Quality')) priorityScore += college.research * 0.3;
+  if (priorities.includes('Campus Life')) priorityScore += college.campus * 0.3;
+  if (priorities.includes('Low Fees')) priorityScore += budgetScore * 0.3;
+  if (priorities.includes('NIRF Ranking')) priorityScore += nirfScore * 0.3;
+
+  // Location bonus
+  const anyIndia = locations.includes('Anywhere in India') || locations.length === 0;
+  const locationBonus = anyIndia ? 10 : (locations.some(l => college.state.includes(l)) ? 20 : 0);
+
+  score = (rankScore * 0.35) + (budgetScore * 0.25) + (priorityScore * 0.25) + (nirfScore * 0.1) + locationBonus;
+  return Math.min(99, Math.round(score));
+}
+
+// ── Main agent function ────────────────────────────────────────
+async function findColleges() {
+  const exam = document.getElementById('exam').value;
+  const rankStr = document.getElementById('rank').value;
+  const category = document.getElementById('category').value;
+  const stream = document.getElementById('stream').value;
+  const budget = parseFloat(document.getElementById('budget').value);
+  const locations = getSelectedChips('location-chips');
+  const priorities = getSelectedChips('priority-chips');
+  const notes = document.getElementById('notes').value;
+
+  if (!exam) { alert('Please select your entrance exam.'); return; }
+  if (!rankStr) { alert('Please enter your rank / score.'); return; }
+
+  const rank = parseRank(rankStr, exam);
+
+  const btn = document.getElementById('find-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Agent is working...';
+
+  const section = document.getElementById('agent-section');
+  const output = document.getElementById('agent-output');
+  section.style.display = 'block';
+  output.innerHTML = `
+    <div class="thinking">
+      <div class="dots"><span></span><span></span><span></span></div>
+      Querying college database for ${exam} rank ${rankStr}, ₹${budget}L budget...
+    </div>`;
+
+  section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Filter & score colleges
+  await sleep(1200);
+  const matched = COLLEGE_DB
+    .filter(c => collegeMatchesStudent(c, exam, rank, budget, locations, stream, category))
+    .map(c => ({ ...c, score: scoreCollege(c, exam, rank, budget, locations, priorities, stream) }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 8);
+
+  await sleep(800);
+
+  // Build prompt for Claude
+  const studentProfile = `
+Student Profile:
+- Exam: ${exam}, Rank/Score: ${rankStr}, Category: ${category}
+- Preferred Stream: ${stream || 'Any'}
+- Annual Budget: ₹${budget} Lakhs
+- Location Preferences: ${locations.length ? locations.join(', ') : 'Anywhere in India'}
+- Priorities: ${priorities.length ? priorities.join(', ') : 'General'}
+- Additional Notes: ${notes || 'None'}
+
+Pre-filtered colleges from database (already ranked by score):
+${matched.map((c, i) => `${i + 1}. ${c.name} (${c.city}, ${c.state}) | Type: ${c.type} | Fees: ₹${c.fees}L/yr | NIRF: #${c.nirf} | Placements: ${c.placements}% | Match Score: ${c.score}/99`).join('\n')}
+
+Please:
+1. Write a brief 2-3 sentence summary of this student's situation and chances.
+2. For each college listed, write ONE short sentence (15-25 words) explaining why it's a great fit for THIS specific student based on their profile.
+3. End with one actionable tip for this student.
+
+Keep the tone warm, encouraging, and practical. Be specific to their profile. Format:
+SUMMARY: [your summary]
+TIPS: [one specific tip]
+COLLEGE_REASONS: [numbered list, one per college, just the reason sentence]`;
+
+  let agentSummary = '';
+  let agentTip = '';
+  let collegeReasons = [];
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: studentProfile }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content?.map(b => b.text || '').join('') || '';
+
+    // Parse response
+    const summaryMatch = text.match(/SUMMARY:\s*([\s\S]*?)(?=TIPS:|COLLEGE_REASONS:|$)/i);
+    const tipMatch = text.match(/TIPS:\s*([\s\S]*?)(?=COLLEGE_REASONS:|$)/i);
+    const reasonsMatch = text.match(/COLLEGE_REASONS:\s*([\s\S]*?)$/i);
+
+    agentSummary = summaryMatch ? summaryMatch[1].trim() : "Based on your profile, here are the best-matching colleges from our database.";
+    agentTip = tipMatch ? tipMatch[1].trim() : "Apply to a mix of top-choice, safe, and backup options.";
+
+    if (reasonsMatch) {
+      const lines = reasonsMatch[1].trim().split('\n').filter(l => l.trim());
+      collegeReasons = lines.map(l => l.replace(/^\d+[\.\)]\s*/, '').trim());
+    }
+  } catch (e) {
+    agentSummary = "Based on your profile, our database has identified the best-matching colleges ranked by eligibility, budget fit, and your priorities.";
+    agentTip = "Apply to a mix of reach, match, and safe colleges to maximize your chances.";
+  }
+
+  // Render output
+  output.innerHTML = '';
+
+  // Stats row
+  if (matched.length > 0) {
+    const avgFee = (matched.reduce((s, c) => s + c.fees, 0) / matched.length).toFixed(1);
+    const topNirf = matched[0] ? matched[0].nirfCat : 'N/A';
+    output.innerHTML += `
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-num">${matched.length}</div><div class="stat-lbl">Colleges Found</div></div>
+        <div class="stat-box"><div class="stat-num">₹${avgFee}L</div><div class="stat-lbl">Avg Fees / Year</div></div>
+        <div class="stat-box"><div class="stat-num">${topNirf}</div><div class="stat-lbl">Top Match NIRF</div></div>
+      </div>`;
+  }
+
+  // Agent bubble
+  output.innerHTML += `
+    <div class="chat-bubble">
+      <strong style="color:var(--green-light);font-family:'Syne',sans-serif;font-size:0.8rem;letter-spacing:0.05em;text-transform:uppercase;">Agent Analysis</strong>
+      <div style="margin-top:0.5rem;color:var(--cream);line-height:1.8">${agentSummary}</div>
+      <div class="divider"></div>
+      <strong style="color:var(--gold);font-size:0.78rem;">💡 Pro Tip:</strong>
+      <div style="color:var(--muted);font-size:0.88rem;margin-top:0.3rem">${agentTip}</div>
+    </div>`;
+
+  // College cards
+  if (matched.length === 0) {
+    output.innerHTML += `<div class="error-msg">⚠️ No colleges matched your exact criteria. Try expanding your location preferences, increasing your budget, or checking if your rank qualifies for more colleges. You can also try selecting "Anywhere in India" for location.</div>`;
+  } else {
+    const grid = document.createElement('div');
+    grid.className = 'colleges-grid';
+
+    matched.forEach((college, i) => {
+      const rankClass = i === 0 ? 'top' : i === 1 ? 'second' : i === 2 ? 'third' : '';
+      const rankLabel = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`;
+      const reason = collegeReasons[i] || `Strong match for your ${exam} profile with ${college.type} quality and ₹${college.fees}L annual fees.`;
+      const delay = i * 0.08;
+
+      const card = document.createElement('div');
+      card.className = 'college-card';
+      card.style.animationDelay = delay + 's';
+      card.innerHTML = `
+        <div class="college-rank ${rankClass}">${rankLabel}</div>
+        <div class="college-info">
+          <h3>${college.name}</h3>
+          <div style="font-size:0.82rem;color:var(--muted)">${college.city} · NIRF ${college.nirfCat} · ${college.type}</div>
+          <div class="college-meta">
+            <span class="tag tag-location">📍 ${college.state}</span>
+            <span class="tag tag-exam">${college.exams[0]}</span>
+            <span class="tag tag-fee">₹${college.fees}L/yr</span>
+          </div>
+        </div>
+        <div class="college-score">
+          <div class="match-score">${college.score}</div>
+          <div class="match-label">Match %</div>
+          <div class="match-bar"><div class="match-bar-fill" style="width:${college.score}%"></div></div>
+        </div>
+        <div class="college-why">🤖 ${reason}</div>
+      `;
+      grid.appendChild(card);
+    });
+
+    output.appendChild(grid);
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '🔄 Search Again';
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ── Auth helpers ───────────────────────────────────────────────
+let currentUser = null;
+
+// Simple in-memory "user store" (demo — no real backend)
+const userStore = {};
+
+function switchTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t, i) => {
+    t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'signup'));
+  });
+  document.querySelectorAll('.auth-form').forEach((f, i) => {
+    f.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'signup'));
+  });
+  hideMessages();
+}
+
+function hideMessages() {
+  ['login-error','login-success','signup-error','signup-success'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+}
+
+function showMsg(id, msg, isError = true) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function togglePassword(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  if (!inp) return;
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    btn.textContent = '🙈';
+  } else {
+    inp.type = 'password';
+    btn.textContent = '👁️';
+  }
+}
+
+function checkStrength(val) {
+  const fill = document.getElementById('strength-fill');
+  if (!fill) return;
+  let score = 0;
+  if (val.length >= 8) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  const pct = score * 25;
+  const colors = ['', '#d45555', '#d47020', '#c4875e', '#5bb896'];
+  fill.style.width = pct + '%';
+  fill.style.background = colors[score] || '#d45555';
+}
+
+function doLogin() {
+  hideMessages();
+  const email = (document.getElementById('login-email')?.value || '').trim();
+  const pass = (document.getElementById('login-password')?.value || '');
+
+  if (!email) { showMsg('login-error', '⚠️ Please enter your email address.'); return; }
+  if (!pass) { showMsg('login-error', '⚠️ Please enter your password.'); return; }
+
+  // Demo: accept any previously registered user OR auto-create on first login
+  if (userStore[email]) {
+    if (userStore[email].password !== pass) {
+      showMsg('login-error', '❌ Incorrect password. Please try again.');
+      return;
+    }
+  } else {
+    // Auto-register on first login (demo mode)
+    userStore[email] = { name: email.split('@')[0], password: pass };
+  }
+
+  loginSuccess(userStore[email].name, email);
+}
+
+function doSignup() {
+  hideMessages();
+  const name = (document.getElementById('signup-name')?.value || '').trim();
+  const email = (document.getElementById('signup-email')?.value || '').trim();
+  const pass = (document.getElementById('signup-password')?.value || '');
+  const confirm = (document.getElementById('signup-confirm')?.value || '');
+
+  if (!name) { showMsg('signup-error', '⚠️ Please enter your full name.'); return; }
+  if (!email || !email.includes('@')) { showMsg('signup-error', '⚠️ Please enter a valid email.'); return; }
+  if (pass.length < 6) { showMsg('signup-error', '⚠️ Password must be at least 6 characters.'); return; }
+  if (pass !== confirm) { showMsg('signup-error', '❌ Passwords do not match.'); return; }
+  if (userStore[email]) { showMsg('signup-error', '⚠️ An account with this email already exists.'); return; }
+
+  userStore[email] = { name, password: pass };
+  showMsg('signup-success', '✅ Account created! Signing you in...', false);
+  document.getElementById('signup-success').style.display = 'block';
+
+  setTimeout(() => loginSuccess(name, email), 900);
+}
+
+function socialLogin(provider) {
+  // Demo: simulate OAuth success
+  const demoName = provider === 'Google' ? 'Google User' : 'LinkedIn User';
+  const demoEmail = provider.toLowerCase() + '@demo.collegeguru';
+  userStore[demoEmail] = { name: demoName, password: '__social__' };
+  loginSuccess(demoName, demoEmail);
+}
+
+function loginSuccess(name, email) {
+  currentUser = { name, email };
+  // Update header
+  const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+  const avatar = document.getElementById('user-avatar');
+  const nameDisplay = document.getElementById('user-name-display');
+  if (avatar) avatar.textContent = initials;
+  if (nameDisplay) nameDisplay.textContent = name.split(' ')[0];
+
+  // Show main app, hide login
+  document.getElementById('login-page').style.opacity = '0';
+  document.getElementById('login-page').style.transition = 'opacity 0.4s';
+  setTimeout(() => {
+    document.getElementById('login-page').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+  }, 400);
+}
+
+function doLogout() {
+  currentUser = null;
+  document.getElementById('main-app').style.display = 'none';
+  const lp = document.getElementById('login-page');
+  lp.style.display = 'flex';
+  lp.style.opacity = '0';
+  requestAnimationFrame(() => {
+    lp.style.transition = 'opacity 0.4s';
+    lp.style.opacity = '1';
+  });
+  // Clear fields
+  ['login-email','login-password','signup-name','signup-email','signup-password','signup-confirm'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  hideMessages();
+  switchTab('login');
+}
+
+function showForgot() {
+  showMsg('login-error', '📧 Password reset is not available in demo mode. Use any password to sign in.', true);
+  document.getElementById('login-error').style.background = 'rgba(255,200,66,0.08)';
+  document.getElementById('login-error').style.borderColor = 'rgba(196,135,94,0.2)';
+  document.getElementById('login-error').style.color = 'var(--gold)';
+}
+
+// ── Abstract Modal ─────────────────────────────────────────────
+function openAbstract() {
+  document.getElementById('abstract-modal').classList.add('open');
+}
+function closeAbstract() {
+  document.getElementById('abstract-modal').classList.remove('open');
+}
+document.addEventListener('click', e => {
+  const modal = document.getElementById('abstract-modal');
+  if (e.target === modal) closeAbstract();
+});
+
+// Allow Enter key on login form
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const loginActive = document.getElementById('form-login')?.classList.contains('active');
+  const signupActive = document.getElementById('form-signup')?.classList.contains('active');
+  if (loginActive) doLogin();
+  else if (signupActive) doSignup();
+});
+</script>
+</body>
+</html>
